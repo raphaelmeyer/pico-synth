@@ -1,0 +1,27 @@
+{
+  "name": "Raspberry Pi Pico Toolchain",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "llvm-vs-code-extensions.vscode-clangd",
+        "ms-vscode.cmake-tools",
+        "twxs.cmake"
+      ],
+      "settings": {
+        "cmake.buildDirectory": "/build",
+        "cmake.sourceDirectory": "/workspace/source",
+        "editor.formatOnSave": true,
+        "[cpp]": {
+          "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
+        }
+      }
+    }
+  },
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+  "workspaceFolder": "/workspace",
+  "containerUser": "ubuntu",
+  "updateRemoteUserUID": true
+}
