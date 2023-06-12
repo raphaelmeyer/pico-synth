@@ -1,0 +1,30 @@
+; I2S
+;
+; clock          _-_-_-_-|_-_-_-_-|_-_-_-_-
+; word select    ______--|------__|______--
+; data           <><><><>|<><><><>|<><><><>
+;                msb  lsb|msb  lsb|msb  lsb
+;                 left   | right  | left
+
+.program i2s
+.side_set 2
+
+  set x, 14       side 0b00
+
+.wrap_target
+
+left:
+  out pins, 1     side 0b00
+  jmp x-- left    side 0b01
+
+  out pins, 1     side 0b10
+  set x, 14       side 0b11
+
+right:
+  out pins, 1     side 0b10
+  jmp x-- right   side 0b11
+
+  out pins, 1     side 0b00
+  set x, 14       side 0b01
+
+.wrap
