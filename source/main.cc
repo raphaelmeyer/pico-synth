@@ -1,6 +1,7 @@
 
 #include "config.h"
 #include "i2s.h"
+#include "oscillator.h"
 
 #include <hardware/pio.h>
 #include <pico/time.h>
@@ -13,33 +14,10 @@ Config const config{.audio = {.sampling_frequency = 48000},
 
 } // namespace
 
-enum class Form { Square, Sawtooth, Sine };
-
-class Oscillator {
-public:
-  Oscillator(uint16_t frequency) : frequency_{frequency} {
-    offset_ = 65535ul * frequency_ / config.audio.sampling_frequency;
-  }
-
-  uint16_t next_value() {
-    value_ = (value_ + offset_) % 65536;
-    return value_;
-  }
-
-  void set_type([[maybe_unused]] Form form) {}
-  void set_frequency([[maybe_unused]] uint16_t frequency) {}
-
-private:
-  uint16_t value_ = 0;
-
-  uint16_t frequency_{};
-  uint16_t offset_{};
-};
-
 namespace {
 
-Oscillator left{440};
-Oscillator right{680};
+Oscillator left{config.audio, 440};
+Oscillator right{config.audio, 680};
 I2S i2s{config.i2s, config.audio};
 
 } // namespace
