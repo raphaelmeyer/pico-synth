@@ -13,11 +13,15 @@ public:
   uint16_t next_value();
 
   void set_type([[maybe_unused]] Form form);
-  void set_frequency([[maybe_unused]] uint16_t frequency);
+  void set_frequency(uint16_t frequency);
 
 private:
+  uint16_t offset() const;
+
   uint16_t value_ = 0;
 
   uint16_t frequency_{};
   uint16_t offset_{};
+
+  Config::Audio const config_{};
 };
