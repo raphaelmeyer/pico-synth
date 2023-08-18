@@ -17,7 +17,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive && \
 
 RUN git clone https://github.com/raspberrypi/pico-sdk.git /pico-sdk \
   && cd /pico-sdk \
-  && git switch -c raphaelmeyer/1.5.0 1.5.0 \
+  && git switch -c raphaelmeyer/1.5.1 1.5.1 \
   && git submodule update --init
 
 ENV PICO_SDK_PATH /pico-sdk
