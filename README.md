@@ -1,4 +1,4 @@
-# Pico ADSR
+# Pico Synth
 
 ## Getting started
 
@@ -7,12 +7,16 @@
 - click on `><` and select `Reopen in Container`
 - configure and build
 
-Plug in the RPi Pico (BOOTSEL) and copy the uf2 from the container to the RPi in a shell on the host.
+Plug in a Raspberry Pi Pico (BOOTSEL) and copy the uf2 from the container to the RPi in a shell on the host.
 Paths and container name may differ.
 
-    docker cp <container>:/build/helloworld.uf2 /run/media/.../RPI-RP2/
+    docker cp <container>:/build/pico-synth/pico-synth.uf2 /run/media/.../RPI-RP2/
 
-## Hardware
+## Pico Synth
+
+The executable of the _pico-synth_ generated in `/build/pico-synth/pico-synth.uf2`.
+
+### Hardware
 
 - Raspberry Pi Pico
 - ada3678 (UDA1334)
@@ -27,3 +31,7 @@ Paths and container name may differ.
 
     36 (3V3 OUT)  ---- VIN
     38 (GND)      ---- GND
+
+## Midi Adapter
+
+The executable of the _midi-adapter_ generated in `/build/midi-adapter/midi-adapter.uf2`.
