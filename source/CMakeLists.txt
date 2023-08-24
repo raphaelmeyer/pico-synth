@@ -11,7 +11,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_library(settings INTERFACE)
-target_compile_options(settings INTERFACE -Wall -Wextra -Werror -Wno-ignored-qualifiers)
+target_compile_options(settings INTERFACE -Wall -Wextra -Werror)
 
 add_subdirectory(midi-adapter)
 add_subdirectory(pico-synth)

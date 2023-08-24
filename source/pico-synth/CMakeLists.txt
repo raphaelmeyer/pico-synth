@@ -1,6 +1,7 @@
 add_executable(pico-synth)
 target_sources(pico-synth PRIVATE
   main.cc
+  envelope-generator.cc
   i2s.cc
   oscillator.cc
 )

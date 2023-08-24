@@ -1,27 +1,25 @@
 #pragma once
 
 #include "config.h"
+#include "source.h"
 
-#include <pico/types.h>
+enum class Form { Sawtooth, Triangle, Square };
 
-enum class Form { Square, Sawtooth, Sine };
-
-class Oscillator {
+class Oscillator : public Source {
 public:
-  Oscillator(Config::Audio const &config_, uint16_t frequency);
+  Oscillator(Config::Audio const &config_);
 
-  uint16_t next_value();
+  uint16_t next_value() override;
 
-  void set_type([[maybe_unused]] Form form);
+  void set_type(Form form);
   void set_frequency(uint16_t frequency);
 
 private:
-  uint16_t offset() const;
+  uint16_t frequency_{440};
+  Form form_{};
 
-  uint16_t value_ = 0;
-
-  uint16_t frequency_{};
-  uint16_t offset_{};
+  int32_t ticks_{};
+  int32_t period_{};
 
   Config::Audio const config_{};
 };

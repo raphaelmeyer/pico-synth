@@ -7,7 +7,7 @@
 class I2S {
 public:
   I2S(Config::I2S const &config, Config::Audio const &audio)
-      : config_{config}, audio_{audio} {};
+      : config_{config}, audio_{audio} {}
 
   void init();
 

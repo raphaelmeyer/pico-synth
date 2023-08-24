@@ -4,7 +4,7 @@
 
 struct Config {
   struct Audio {
-    uint const sampling_frequency;
+    uint32_t const sampling_frequency;
   };
 
   struct I2S {
