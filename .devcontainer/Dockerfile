@@ -15,15 +15,16 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive && \
   && apt-get clean -y \
   && rm -rf /var/lib/apt/lists/*
 
+# RUN useradd -ms /bin/bash ubuntu
+RUN mkdir /build /pico-sdk && chown -R ubuntu:ubuntu /build /pico-sdk
+
+USER ubuntu
+
 RUN git clone https://github.com/raspberrypi/pico-sdk.git /pico-sdk \
   && cd /pico-sdk \
   && git switch -c raphaelmeyer/1.5.1 1.5.1 \
   && git submodule update --init
 
 ENV PICO_SDK_PATH /pico-sdk
-
-# RUN useradd -ms /bin/bash ubuntu
-RUN mkdir /build && chown -R ubuntu:ubuntu /build
-USER ubuntu
 
 VOLUME [ "/build" ]
