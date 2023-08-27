@@ -20,13 +20,27 @@ Config const config{.audio = {.sampling_frequency = 48000},
 namespace {
 
 Oscillator oscillator{config.audio};
+Oscillator oscillator2{config.audio};
 
 EnvelopeGenerator eg{config.audio, oscillator};
+EnvelopeGenerator eg2{config.audio, oscillator2};
 
 I2S i2s{config.i2s, config.audio};
 
 uint16_t P = 0;
 
+uint16_t C2 = 65;
+uint16_t D2 = 73;
+uint16_t E2 = 82;
+uint16_t F2 = 87;
+uint16_t G2 = 98;
+uint16_t Gs2 = 104;
+uint16_t A2 = 110;
+uint16_t B2 = 123;
+
+uint16_t C3 = 131;
+uint16_t D3 = 147;
+uint16_t E3 = 165;
 uint16_t Gs3 = 208;
 uint16_t A3 = 220;
 uint16_t B3 = 247;
@@ -34,7 +48,6 @@ uint16_t B3 = 247;
 uint16_t C4 = 262;
 uint16_t D4 = 294;
 uint16_t E4 = 330;
-//
 uint16_t Gs4 = 415;
 uint16_t A4 = 440;
 uint16_t B4 = 494;
@@ -45,11 +58,6 @@ uint16_t E5 = 659;
 uint16_t F5 = 698;
 uint16_t G5 = 784;
 uint16_t A5 = 880;
-// uint16_t B5 = 988;
-
-// uint16_t C6 = 1047;
-// uint16_t D6 = 1175;
-// uint16_t E6 = 1319;
 
 } // namespace
 
@@ -60,12 +68,18 @@ int main() {
 
   i2s.init();
 
-  oscillator.set_frequency(440);
+  oscillator.set_type(Form::Square);
+  oscillator2.set_type(Form::Triangle);
 
   eg.set_attack(100);
   eg.set_decay(50);
-  eg.set_sustain(4096);
+  eg.set_sustain(2048);
   eg.set_release(400);
+
+  eg2.set_attack(200);
+  eg2.set_decay(50);
+  eg2.set_sustain(4096);
+  eg2.set_release(200);
 
   struct Note {
     uint16_t note{};
@@ -89,12 +103,62 @@ int main() {
       {C4, 4}, {E4, 4}, {A4, 4},  {A4, 4}, {Gs4, 12}, {P, 4} //
   };
 
+  std::vector<Note> bass{
+      {E2, 2},  {E3, 2},  {E2, 2},  {E3, 2},  {E2, 2},
+      {E3, 2},  {E2, 2},  {E3, 2}, //
+
+      {A2, 2},  {A3, 2},  {A2, 2},  {A3, 2},  {A2, 2},
+      {A3, 2},  {A2, 2},  {A3, 2}, //
+
+      {Gs2, 2}, {Gs3, 2}, {Gs2, 2}, {Gs3, 2}, {E2, 2},
+      {E3, 2},  {E2, 2},  {E3, 2}, //
+
+      {A2, 2},  {A3, 2},  {A2, 2},  {A3, 2},  {A2, 2},
+      {A3, 2},  {B2, 2},  {C3, 2}, //
+
+      {D3, 2},  {D2, 2},  {P, 2},   {D2, 2},  {P, 2},
+      {D2, 2},  {A2, 2},  {F2, 2}, //
+
+      {C2, 2},  {C3, 2},  {P, 2},   {C3, 2},  {C2, 2},
+      {G2, 2},  {G2, 2},  {P, 2}, //
+
+      {B2, 2},  {B3, 2},  {P, 2},   {B3, 2},  {P, 2},
+      {E3, 2},  {P, 2},   {Gs3, 2}, //
+
+      {A2, 2},  {E3, 2},  {A2, 2},  {E3, 2},  {A2, 8}, //
+
+      {A3, 2},  {E4, 2},  {A3, 2},  {E4, 2},  {A3, 2},
+      {E4, 2},  {A3, 2},  {E4, 2}, //
+
+      {Gs3, 2}, {E4, 2},  {Gs3, 2}, {E4, 2},  {Gs3, 2},
+      {E4, 2},  {Gs3, 2}, {E4, 2}, //
+
+      {A3, 2},  {E4, 2},  {A3, 2},  {E4, 2},  {A3, 2},
+      {E4, 2},  {A3, 2},  {E4, 2}, //
+
+      {Gs3, 2}, {E4, 2},  {Gs3, 2}, {E4, 2},  {Gs3, 2},
+      {E4, 2},  {Gs3, 2}, {E4, 2}, //
+
+      {A3, 2},  {E4, 2},  {A3, 2},  {E4, 2},  {A3, 2},
+      {E4, 2},  {A3, 2},  {E4, 2}, //
+
+      {Gs3, 2}, {E4, 2},  {Gs3, 2}, {E4, 2},  {Gs3, 2},
+      {E4, 2},  {Gs3, 2}, {E4, 2}, //
+
+      {A3, 2},  {E4, 2},  {A3, 2},  {E4, 2},  {A3, 2},
+      {E4, 2},  {A3, 2},  {E4, 2}, //
+
+      {Gs3, 2}, {E4, 2},  {Gs3, 2}, {E4, 2},  {P, 8} //
+  };
+
   int count = 0;
   int rem = 0;
+  int rem2 = 0;
 
   int beat = 0;
 
   auto it = melody.cbegin();
+  auto jt = bass.cbegin();
 
   for (;;) {
     if (count == 0) {
@@ -116,6 +180,7 @@ int main() {
           oscillator.set_frequency(it->note);
           eg.trigger();
         }
+
         rem = it->length;
 
         ++it;
@@ -124,6 +189,23 @@ int main() {
         }
       }
       --rem;
+
+      if (rem2 == 0) {
+        if (jt->note == P) {
+          eg2.release();
+        } else {
+          oscillator2.set_frequency(jt->note);
+          eg2.trigger();
+        }
+
+        rem2 = jt->length;
+
+        ++jt;
+        if (jt == bass.cend()) {
+          jt = bass.cbegin();
+        }
+      }
+      --rem2;
     }
 
     ++count;
@@ -131,7 +213,8 @@ int main() {
       count = 0;
     }
 
-    auto const mono = eg.next_value();
-    i2s.output_sample(mono, mono);
+    auto const left = eg.next_value();
+    auto const right = eg2.next_value();
+    i2s.output_sample(left, right);
   }
 }

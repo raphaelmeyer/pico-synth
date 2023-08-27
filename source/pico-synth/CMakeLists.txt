@@ -10,6 +10,7 @@ pico_generate_pio_header(pico-synth ${CMAKE_CURRENT_SOURCE_DIR}/pio/i2s.pio)
 
 target_link_libraries(pico-synth PRIVATE
   pico_stdlib
+  pico_rand
   hardware_pio
   settings
 )

@@ -15,10 +15,12 @@
         "cmake.sourceDirectory": "/workspace/source",
         "editor.formatOnSave": true,
         "[cpp]": {
-          "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
+          "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
+          "editor.inlayHints.enabled": "off"
         },
         "clangd.arguments": [
-          "--compile-commands-dir=/build"
+          "--compile-commands-dir=/build",
+          "--query-driver=/usr/bin/arm-none-eabi-g++"
         ]
       }
     }

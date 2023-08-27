@@ -3,7 +3,7 @@
 #include "config.h"
 #include "source.h"
 
-enum class Form { Sawtooth, Triangle, Square };
+enum class Form { Sawtooth, Triangle, Square, Noise };
 
 class Oscillator : public Source {
 public:
@@ -20,6 +20,11 @@ private:
 
   int32_t ticks_{};
   int32_t period_{};
+
+  uint16_t noise1_{};
+  uint16_t noise2_{};
+  uint16_t noise3_{};
+  uint16_t noise4_{};
 
   Config::Audio const config_{};
 };
