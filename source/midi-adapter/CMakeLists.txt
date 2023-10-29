@@ -18,5 +18,3 @@ target_link_libraries(midi-adapter PRIVATE
 target_include_directories(midi-adapter PRIVATE .)
 
 pico_add_extra_outputs(midi-adapter)
-
-add_subdirectory(lvgl)
