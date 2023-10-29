@@ -2,7 +2,7 @@
 
 namespace lv {
 
-Display::Display(Config::Display const &config) : lcd_{config} {}
+Display::Display(config::Display const &config) : lcd_{config} {}
 
 void Display::initialize() {
   lv_disp_draw_buf_init(&draw_buffer_, buffer_1_.data(), buffer_2_.data(),

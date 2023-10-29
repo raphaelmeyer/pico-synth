@@ -52,7 +52,7 @@ constexpr const uint8_t GMCTRP1 = 0xE0;
 constexpr const uint8_t GMCTRN1 = 0xE1;
 } // namespace
 
-St7735::St7735(Config::Display const &config) : config_{config} {
+St7735::St7735(config::Display const &config) : config_{config} {
 
   gpio_init(PICO_DEFAULT_LED_PIN);
   gpio_set_dir(PICO_DEFAULT_LED_PIN, GPIO_OUT);

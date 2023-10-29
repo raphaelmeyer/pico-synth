@@ -1,4 +1,4 @@
-#include "hw_config.h"
+#include "display_config.h"
 
 #include "st7735.h"
 
@@ -15,7 +15,7 @@ public:
   static constexpr size_t Width = 128;
   static constexpr size_t Height = 128;
 
-  Display(Config::Display const &config);
+  Display(config::Display const &config);
 
   void initialize();
 

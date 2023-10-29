@@ -1,3 +1,5 @@
+#include "hw_config.h"
+
 #include "display.h"
 
 #include <bsp/board.h>
