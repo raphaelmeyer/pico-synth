@@ -1,13 +1,14 @@
 #pragma once
 
-#include "config.h"
+#include "i2s_config.h"
 
+#include <cstdint>
 #include <hardware/pio.h>
 
 class I2S {
 public:
-  I2S(Config::I2S const &config, Config::Audio const &audio)
-      : config_{config}, audio_{audio} {}
+  I2S(config::I2S const &config, uint32_t sampling_rate)
+      : config_{config}, sampling_rate_{sampling_rate} {}
 
   void init();
 
@@ -16,6 +17,6 @@ public:
 private:
   int sm_{};
 
-  Config::I2S const config_;
-  Config::Audio const audio_;
+  config::I2S const config_;
+  uint32_t const sampling_rate_;
 };

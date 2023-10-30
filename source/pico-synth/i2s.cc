@@ -25,8 +25,7 @@ void I2S::init() {
   sm_config_set_fifo_join(&sm_config, PIO_FIFO_JOIN_TX);
 
   int const cycles_per_sample = 2 * 32;
-  auto const div =
-      clock_get_hz(clk_sys) / (audio_.sampling_frequency * cycles_per_sample);
+  auto const div = clock_get_hz(clk_sys) / (sampling_rate_ * cycles_per_sample);
   sm_config_set_clkdiv_int_frac(&sm_config, div, 0);
 
   pio_sm_init(config_.pio, sm_, offset, &sm_config);

@@ -25,7 +25,7 @@ Oscillator oscillator2{config.audio};
 EnvelopeGenerator eg{config.audio, oscillator};
 EnvelopeGenerator eg2{config.audio, oscillator2};
 
-I2S i2s{config.i2s, config.audio};
+I2S i2s{config.i2s, config.audio.sampling_frequency};
 
 uint16_t P = 0;
 
