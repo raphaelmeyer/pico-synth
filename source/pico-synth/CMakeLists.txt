@@ -2,16 +2,13 @@ add_executable(pico-synth)
 target_sources(pico-synth PRIVATE
   main.cc
   envelope-generator.cc
-  i2s.cc
   oscillator.cc
 )
 
-pico_generate_pio_header(pico-synth ${CMAKE_CURRENT_SOURCE_DIR}/pio/i2s.pio)
-
 target_link_libraries(pico-synth PRIVATE
+  device::i2s
   pico_stdlib
   pico_rand
-  hardware_pio
   settings
 )
 
