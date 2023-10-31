@@ -1,13 +1,13 @@
 #pragma once
 
-#include "config.h"
 #include "source.h"
+#include "synth_config.h"
 
 enum class Form { Sawtooth, Triangle, Square, Noise };
 
 class Oscillator : public Source {
 public:
-  Oscillator(Config::Audio const &config_);
+  Oscillator(config::Synth const &config_);
 
   uint16_t next_value() override;
 
@@ -26,5 +26,5 @@ private:
   uint16_t noise3_{};
   uint16_t noise4_{};
 
-  Config::Audio const config_{};
+  config::Synth const config_{};
 };

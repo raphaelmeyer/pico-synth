@@ -1,12 +1,11 @@
 add_executable(pico-synth)
 target_sources(pico-synth PRIVATE
   main.cc
-  envelope-generator.cc
-  oscillator.cc
 )
 
 target_link_libraries(pico-synth PRIVATE
   device::i2s
+  library::synth
   pico_stdlib
   pico_rand
   settings

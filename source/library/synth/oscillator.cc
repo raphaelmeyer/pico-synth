@@ -2,7 +2,7 @@
 
 #include <pico/rand.h>
 
-Oscillator::Oscillator(Config::Audio const &config) : config_{config} {}
+Oscillator::Oscillator(config::Synth const &config) : config_{config} {}
 
 uint16_t Oscillator::next_value() {
   if (ticks_ > period_) {
@@ -46,5 +46,5 @@ void Oscillator::set_type(Form form) { form_ = form; }
 
 void Oscillator::set_frequency(uint16_t frequency) {
   frequency_ = frequency;
-  period_ = config_.sampling_frequency / frequency;
+  period_ = config_.sampling_rate / frequency;
 }

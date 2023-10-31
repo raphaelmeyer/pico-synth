@@ -64,15 +64,15 @@ void EnvelopeGenerator::release() {
 }
 
 void EnvelopeGenerator::set_attack(uint16_t ms) {
-  attack_ = ms * config_.sampling_frequency / 1000;
+  attack_ = ms * config_.sampling_rate / 1000;
 }
 
 void EnvelopeGenerator::set_decay(uint16_t ms) {
-  decay_ = ms * config_.sampling_frequency / 1000;
+  decay_ = ms * config_.sampling_rate / 1000;
 }
 
 void EnvelopeGenerator::set_sustain(uint16_t level) { sustain_ = level; }
 
 void EnvelopeGenerator::set_release(uint16_t ms) {
-  release_ = ms * config_.sampling_frequency / 1000;
+  release_ = ms * config_.sampling_rate / 1000;
 }

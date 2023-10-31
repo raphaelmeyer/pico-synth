@@ -12,20 +12,20 @@
 
 namespace {
 
-Config const config{.audio = {.sampling_frequency = 48000},
+Config const config{.synth = {.sampling_rate = 48000},
                     .i2s = {.data = 12, .clock_ws_base = 10, .pio = pio0}};
 
 } // namespace
 
 namespace {
 
-Oscillator oscillator{config.audio};
-Oscillator oscillator2{config.audio};
+Oscillator oscillator{config.synth};
+Oscillator oscillator2{config.synth};
 
-EnvelopeGenerator eg{config.audio, oscillator};
-EnvelopeGenerator eg2{config.audio, oscillator2};
+EnvelopeGenerator eg{config.synth, oscillator};
+EnvelopeGenerator eg2{config.synth, oscillator2};
 
-I2S i2s{config.i2s, config.audio.sampling_frequency};
+I2S i2s{config.i2s, config.synth.sampling_rate};
 
 uint16_t P = 0;
 

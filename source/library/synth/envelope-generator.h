@@ -1,11 +1,11 @@
 #pragma once
 
-#include "config.h"
 #include "source.h"
+#include "synth_config.h"
 
 class EnvelopeGenerator : public Source {
 public:
-  EnvelopeGenerator(Config::Audio const &config, Source &source)
+  EnvelopeGenerator(config::Synth const &config, Source &source)
       : config_{config}, source_{source} {}
 
   uint16_t next_value() override;
@@ -19,7 +19,7 @@ public:
   void set_release(uint16_t release);
 
 private:
-  Config::Audio const config_;
+  config::Synth const config_;
   Source &source_;
 
   enum class State { Idle, Attack, Decay, Sustain, Release };
