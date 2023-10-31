@@ -13,8 +13,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_library(settings INTERFACE)
 target_compile_options(settings INTERFACE -Wall -Wextra -Werror)
 
-add_subdirectory(pico-synth)
-
 add_subdirectory(executable)
 add_subdirectory(library)
 add_subdirectory(device)
