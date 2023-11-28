@@ -1,13 +1,15 @@
 add_executable(pico-synth)
 target_sources(pico-synth PRIVATE
   main.cc
+  demo.cc
 )
 
 target_link_libraries(pico-synth PRIVATE
   device::i2s
   library::synth
-  pico_stdlib
+  pico_multicore
   pico_rand
+  pico_stdlib
   settings
 )
 
