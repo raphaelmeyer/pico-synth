@@ -1,0 +1,39 @@
+# Pico Synth
+
+## Protocol (SPI?)
+
+    Message = Address, Command, [ Data ] ;
+    Address = Device, Oscillator ;
+    Command = Trigger | Release | Write Register ;
+    Trigger = '0x01' ;
+    Release = '0x02' ;
+    Write Register = '0x1', Register ;
+
+    Device =      '0x0' | ... | '0xF' ;
+    Oscillator =  '0x0' | ... | '0xF' ;
+    Register =    '0x0' | ... | '0xF' ;
+    Data =     '0x0000' | ... | '0xFFFF' ;
+
+Remarks
+- Commands 0x00 to 0x0F have no data
+- Commands 0x10 to 0xFF have data
+
+## Oscillator Registers
+
+    0x0   Control
+    0x1   Frequency
+    0x2   Attack
+    0x3   Decay
+    0x4   Sustain
+    0x5   Release
+
+Control register:
+
+    Reserved:4 | Wave:4 | Reserved:8
+
+Wave:
+
+    0x0 Noise
+    0x1 Square
+    0x2 Triangle
+    0x3 Sawtooth
