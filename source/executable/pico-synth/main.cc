@@ -5,6 +5,7 @@
 #include "oscillator.h"
 
 #include <hardware/pio.h>
+#include <pico/binary_info.h>
 #include <pico/time.h>
 #include <pico/types.h>
 
@@ -62,6 +63,8 @@ uint16_t A5 = 880;
 } // namespace
 
 int main() {
+
+  bi_decl(bi_3pins_with_names(14, "BCLK", 15, "WSEL", 16, "DIN"));
 
   gpio_init(PICO_DEFAULT_LED_PIN);
   gpio_set_dir(PICO_DEFAULT_LED_PIN, true);

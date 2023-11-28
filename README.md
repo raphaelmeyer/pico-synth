@@ -7,14 +7,15 @@
 - click on `><` and select `Reopen in Container`
 - configure and build
 
-Plug in a Raspberry Pi Pico (BOOTSEL) and copy the uf2 from the container to the RPi in a shell on the host.
-Paths and container name may differ.
+Plug in a Raspberry Pi Pico (BOOTSEL) and copy the uf2 from the container to
+the RPi in a shell on the host. Paths and container name may differ.
 
-    docker cp <container>:/build/pico-synth/pico-synth.uf2 /run/media/.../RPI-RP2/
+    docker cp <container>:/build/executable/.../<...>.uf2 /run/media/.../RPI-RP2/
 
 ## Pico Synth
 
-The executable of the _pico-synth_ generated in `/build/pico-synth/pico-synth.uf2`.
+The executable of the _pico-synth_ is generated in
+`/build/executable/pico-synth/pico-synth.uf2`.
 
 ### Hardware
 
@@ -34,4 +35,5 @@ The executable of the _pico-synth_ generated in `/build/pico-synth/pico-synth.uf
 
 ## Midi Adapter
 
-The executable of the _midi-adapter_ generated in `/build/midi-adapter/midi-adapter.uf2`.
+The executable of the _midi-adapter_ is generated in
+`/build/executable/midi-adapter/midi-adapter.uf2`.
