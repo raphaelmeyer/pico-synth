@@ -1,6 +1,7 @@
 add_executable(pico-synth)
 target_sources(pico-synth PRIVATE
   main.cc
+  tone-generator.cc
   demo.cc
 )
 

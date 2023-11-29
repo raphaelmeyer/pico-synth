@@ -1,13 +1,35 @@
-#include "demo.h"
+#include "config.h"
+#include "tone-generator.h"
+
+#include <envelope-generator.h>
+#include <i2s.h>
+#include <oscillator.h>
 
 #include <hardware/gpio.h>
+#include <hardware/pio.h>
 #include <pico/binary_info.h>
 #include <pico/multicore.h>
 
 #include <vector>
 
 namespace {
-void second_core_entry() { run_demo(); }
+
+Config const config{.synth = {.sampling_rate = 48000},
+                    .i2s = {.data = 12, .clock_ws_base = 10, .pio = pio0}};
+
+Oscillator oscillator{config.synth};
+EnvelopeGenerator envelope_generator{config.synth, oscillator};
+ToneGenerator tone_generator{oscillator, envelope_generator};
+
+I2S i2s{config.i2s, config.synth.sampling_rate};
+
+void second_core_entry() {
+  for (;;) {
+    auto const value = tone_generator.next_value();
+    i2s.output_sample(value, value);
+  }
+}
+
 } // namespace
 
 int main() {
@@ -21,6 +43,9 @@ int main() {
 
   gpio_put(PICO_DEFAULT_LED_PIN, true);
 
-  for (;;)
-    ;
+  for (;;) {
+    // read message from spi
+    // decode message
+    // tone_generator.set_xxx(...)
+  }
 }
