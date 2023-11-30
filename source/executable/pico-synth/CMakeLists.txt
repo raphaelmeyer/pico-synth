@@ -3,14 +3,17 @@ target_sources(pico-synth PRIVATE
   main.cc
   tone-generator.cc
   demo.cc
+  control.cc
 )
 
 target_link_libraries(pico-synth PRIVATE
   device::i2s
   library::synth
+  library::message
   pico_multicore
   pico_rand
   pico_stdlib
+  hardware_spi
   settings
 )
 
