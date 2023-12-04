@@ -2,12 +2,13 @@
 
 #include "display.h"
 
+#include <lvgl.h>
+
 #include <bsp/board.h>
-#include <src/misc/lv_area.h>
-#include <src/misc/lv_printf.h>
 #include <tusb.h>
 
-#include <lvgl.h>
+#include <hardware/gpio.h>
+#include <pico/binary_info.h>
 
 namespace {
 
@@ -47,6 +48,9 @@ void midi_task() {
 } // namespace
 
 int main() {
+  bi_decl(bi_3pins_with_func(17, 18, 19, GPIO_FUNC_SPI));
+  bi_decl(bi_2pins_with_names(20, "D/C", 21, "RST"));
+
   board_init();
   lv_init();
 
