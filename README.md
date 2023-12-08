@@ -37,3 +37,19 @@ The executable of the _pico-synth_ is generated in
 
 The executable of the _midi-adapter_ is generated in
 `/build/executable/midi-adapter/midi-adapter.uf2`.
+
+### Hardware
+
+- Raspberry Pi Pico
+
+## Target tests
+
+Available target tests:
+    - `/build/library/specs/library-spec.uf`
+
+Conncet to the USB serial device, e.g. with `python-pyserial`:
+
+    python -m serial.tools.miniterm /dev/ttyACM0
+
+A device flashed with tests can accepts requests from `picotool` by using flag
+`-f`.
