@@ -6,6 +6,7 @@
 #include <i2s.h>
 #include <message.h>
 #include <oscillator.h>
+#include <pico-random.h>
 
 #include <hardware/gpio.h>
 #include <hardware/pio.h>
@@ -24,7 +25,9 @@ Config const config{
     .i2s = {.data = 12, .clock_ws_base = 10, .pio = pio0},
     .control{.clock = 18, .mosi = 16, .chip_select = 17, .spi = spi0}};
 
-Oscillator oscillator{config.synth};
+PicoRandom random{};
+
+Oscillator oscillator{config.synth, random};
 EnvelopeGenerator envelope_generator{config.synth, oscillator};
 ToneGenerator tone_generator{oscillator, envelope_generator};
 

@@ -4,6 +4,7 @@
 #include "envelope-generator.h"
 #include "i2s.h"
 #include "oscillator.h"
+#include "pico-random.h"
 
 #include <vector>
 
@@ -12,8 +13,10 @@ namespace {
 Config const config{.synth = {.sampling_rate = 48000},
                     .i2s = {.data = 12, .clock_ws_base = 10, .pio = pio0}};
 
-Oscillator oscillator{config.synth};
-Oscillator oscillator2{config.synth};
+PicoRandom random{};
+
+Oscillator oscillator{config.synth, random};
+Oscillator oscillator2{config.synth, random};
 
 EnvelopeGenerator eg{config.synth, oscillator};
 EnvelopeGenerator eg2{config.synth, oscillator2};

@@ -1,8 +1,6 @@
 #include "spec.h"
 
-#include <pico/stdio_usb.h>
-#include <pico/stdlib.h>
-#include <pico/time.h>
+#include <cstdio>
 
 namespace {
 
@@ -61,6 +59,12 @@ void registry::fail() { ++failures_; }
 
 } // namespace
 
+namespace runner {
+
+extern void verify(std::function<void()> run_verify);
+
+} // namespace runner
+
 namespace spec {
 
 describe::describe(std::string name, std::vector<it> examples) {
@@ -69,26 +73,14 @@ describe::describe(std::string name, std::vector<it> examples) {
 
 void check(bool condition, std::source_location const location) {
   if (not condition) {
-    printf("!!      Failed at %s:%lu\n", location.file_name(), location.line());
+    printf("!!      Failed at %s:%u\n", location.file_name(),
+           static_cast<unsigned int>(location.line()));
     registry::fail();
   }
 }
 
 void verify() {
-  stdio_init_all();
-
-  while (not stdio_usb_connected()) {
-    sleep_ms(100);
-  }
-
-  registry::verify();
-
-  stdio_flush();
-
-  // Do not exit to stay accessible for picotool
-  for (;;) {
-    sleep_ms(100);
-  }
+  runner::verify([] { registry::verify(); });
 }
 
 } // namespace spec

@@ -3,11 +3,13 @@
 #include "source.h"
 #include "synth_config.h"
 
+class Random;
+
 enum class Form { Sawtooth, Triangle, Square, Noise };
 
 class Oscillator : public Source {
 public:
-  Oscillator(config::Synth const &config_);
+  Oscillator(config::Synth const &config_, Random &random);
 
   uint16_t next_value() override;
 
@@ -27,4 +29,6 @@ private:
   uint16_t noise4_{};
 
   config::Synth const config_{};
+
+  Random &random_;
 };

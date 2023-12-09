@@ -8,6 +8,7 @@ target_sources(pico-synth PRIVATE
 
 target_link_libraries(pico-synth PRIVATE
   device::i2s
+  device::random
   library::synth
   library::message
   pico_multicore

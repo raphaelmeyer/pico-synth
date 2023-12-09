@@ -1,8 +1,9 @@
 #include "oscillator.h"
 
-#include <pico/rand.h>
+#include <random.h>
 
-Oscillator::Oscillator(config::Synth const &config) : config_{config} {}
+Oscillator::Oscillator(config::Synth const &config, Random &random)
+    : config_{config}, random_{random} {}
 
 uint16_t Oscillator::next_value() {
   if (ticks_ > period_) {
@@ -27,13 +28,13 @@ uint16_t Oscillator::next_value() {
 
   } else if (form_ == Form::Noise) {
     if (ticks_ == 0) {
-      noise1_ = get_rand_32() % 8192;
+      noise1_ = random_.value() % 8192;
     } else if (ticks_ % (period_ / 2) == 0) {
-      noise2_ = get_rand_32() % 4096;
+      noise2_ = random_.value() % 4096;
     } else if (ticks_ % (period_ / 4) == 0) {
-      noise3_ = get_rand_32() % 2048;
+      noise3_ = random_.value() % 2048;
     } else if (ticks_ % (period_ / 8) == 0) {
-      noise4_ = get_rand_32() % 2048;
+      noise4_ = random_.value() % 2048;
     }
     value = noise1_ + noise2_ + noise3_ + noise4_;
   }

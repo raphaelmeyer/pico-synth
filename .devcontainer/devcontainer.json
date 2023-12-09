@@ -11,15 +11,15 @@
         "twxs.cmake"
       ],
       "settings": {
-        "cmake.buildDirectory": "/build",
         "cmake.sourceDirectory": "/workspace/source",
+        "cmake.useCMakePresets": "always",
         "editor.formatOnSave": true,
         "[cpp]": {
           "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
           "editor.inlayHints.enabled": "off"
         },
         "clangd.arguments": [
-          "--compile-commands-dir=/build",
+          "--compile-commands-dir=/build/pico",
           "--query-driver=/usr/bin/arm-none-eabi-g++"
         ]
       }

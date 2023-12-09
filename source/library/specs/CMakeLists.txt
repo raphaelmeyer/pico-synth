@@ -9,6 +9,9 @@ target_link_libraries(library-spec PRIVATE
   spec::spec
   library::message
   library::synth
+  library::pico-api
 )
 
-pico_add_extra_outputs(library-spec)
+if(BUILD_TARGET_PICO)
+  pico_add_extra_outputs(library-spec)
+endif()

@@ -7,8 +7,7 @@ target_sources(synth PRIVATE
 )
 
 target_link_libraries(synth PRIVATE
-  device::i2s
-  pico_rand
+  library::pico-api
   settings
 )
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <pico/types.h>
+#include <cstdint>
 
 class Source {
 public:
