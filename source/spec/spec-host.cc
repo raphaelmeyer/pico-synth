@@ -2,6 +2,6 @@
 
 namespace runner {
 
-void verify(std::function<void()> run_verify) { run_verify(); }
+int verify(std::function<int()> run_verify) { return run_verify(); }
 
 } // namespace runner

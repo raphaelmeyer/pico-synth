@@ -45,7 +45,7 @@ The executable of the _midi-adapter_ is generated in
 ## Target tests
 
 Available target tests:
-    - `/build/library/specs/library-spec.uf`
+    - `/build/library/specs/library-specs.uf`
 
 Conncet to the USB serial device, e.g. with `python-pyserial`:
 

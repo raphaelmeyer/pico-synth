@@ -7,7 +7,7 @@
 
 namespace runner {
 
-void verify(std::function<void()> run_verify) {
+int verify(std::function<int()> run_verify) {
   stdio_init_all();
 
   while (not stdio_usb_connected()) {

@@ -6,6 +6,8 @@ project(PicoSynth)
 
 setup_project()
 
+include(CTest)
+
 add_subdirectory(library)
 add_subdirectory(spec)
 

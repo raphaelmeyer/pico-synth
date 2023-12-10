@@ -11,7 +11,7 @@ struct specification {
 
 class registry {
 public:
-  static void verify();
+  static int verify();
   static void register_spec(specification spec);
 
   static void fail();
@@ -30,7 +30,7 @@ private:
 
 int registry::failures_ = 0;
 
-void registry::verify() {
+int registry::verify() {
   failures_ = 0;
 
   printf("Start...\n");
@@ -49,6 +49,8 @@ void registry::verify() {
   } else {
     printf("\nAll tests passed.\n");
   }
+
+  return failures_ == 0 ? 0 : 1;
 }
 
 void registry::register_spec(specification spec) {
@@ -61,7 +63,7 @@ void registry::fail() { ++failures_; }
 
 namespace runner {
 
-extern void verify(std::function<void()> run_verify);
+extern int verify(std::function<int()> run_verify);
 
 } // namespace runner
 
@@ -79,8 +81,8 @@ void check(bool condition, std::source_location const location) {
   }
 }
 
-void verify() {
-  runner::verify([] { registry::verify(); });
+int verify() {
+  return runner::verify([] { return registry::verify(); });
 }
 
 } // namespace spec

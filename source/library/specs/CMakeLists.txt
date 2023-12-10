@@ -1,11 +1,11 @@
-add_executable(library-spec)
-target_sources(library-spec PRIVATE
+add_executable(library-specs)
+target_sources(library-specs PRIVATE
   spec.main.cc
   ../message/message.spec.cc
   ../synth/oscillator.spec.cc
 )
 
-target_link_libraries(library-spec PRIVATE
+target_link_libraries(library-specs PRIVATE
   spec::spec
   library::message
   library::synth
@@ -13,5 +13,7 @@ target_link_libraries(library-spec PRIVATE
 )
 
 if(BUILD_TARGET_PICO)
-  pico_add_extra_outputs(library-spec)
+  pico_add_extra_outputs(library-specs)
 endif()
+
+add_test(NAME "Library Specs" COMMAND library-specs)

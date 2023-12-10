@@ -12,8 +12,6 @@ function(setup_project)
 
   if(BUILD_TARGET_PICO)
     pico_sdk_init()
-  else()
-    include(CTest)
   endif()
 
   add_library(settings INTERFACE)

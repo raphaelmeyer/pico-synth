@@ -20,6 +20,6 @@ public:
 void check(bool condition, std::source_location const location =
                                std::source_location::current());
 
-void verify();
+int verify();
 
 } // namespace spec

@@ -15,9 +15,11 @@ public:
 
 FakeRandom rnd{};
 
-describe decoding{"Oscillator", {it{"should oscillate", [] {
-                                      Oscillator oscillator{{}, rnd};
-                                      check(oscillator.next_value() == 0);
-                                    }}}};
+describe oscillator{"Oscillator",
+                    {it{"should oscillate", [] {
+                          Oscillator oscillator{{.sampling_rate = 48000}, rnd};
+                          oscillator.set_frequency(440);
+                          check(oscillator.next_value() == 0);
+                        }}}};
 
 } // namespace
