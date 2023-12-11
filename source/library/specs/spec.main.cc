@@ -1,3 +1,3 @@
 #include <spec.h>
 
-int main() { spec::verify(); }
+int main() { return spec::verify(); }
