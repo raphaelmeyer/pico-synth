@@ -1,0 +1,41 @@
+version: '3'
+
+vars:
+  CONTAINER:
+    sh: docker ps -f status=running --format {{ "\"{{.Image}} {{.Names}}\"" }} | grep vsc-pico-synth | cut -f 2 -d " "
+
+tasks:
+  build:
+    desc: Build all artifacts
+    cmds:
+      - task: build-target
+      - task: build-host
+
+  specs-host:
+    desc: Verify specs on host
+    deps:
+      - build-host
+    cmds:
+      - docker exec -it "{{.CONTAINER}}" cmake --build /build/host --target test
+
+  build-host:
+    internal: true
+    deps:
+      - use-container
+    cmds: 
+      - docker exec -it "{{.CONTAINER}}" cmake --build /build/host --target all
+
+  build-target:
+    internal: true
+    deps:
+      - use-container
+    cmds: 
+      - docker exec -it "{{.CONTAINER}}" cmake --build /build/pico --target all
+
+  use-container:
+    internal: true
+    preconditions:
+      - sh: test ! -z "{{.CONTAINER}}"
+        msg: "Container 'vsc-pico-synth' is not running."
+    requires:
+      vars: [CONTAINER]
