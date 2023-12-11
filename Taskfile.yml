@@ -11,6 +11,16 @@ tasks:
       - task: build-target
       - task: build-host
 
+  dev:
+    desc: Verify specs on host in watch mode
+    watch: true
+    sources:
+      - 'source/**/*.cc'
+      - 'source/**/*.h'
+    cmds:
+      - clear
+      - task: specs-host
+
   specs-host:
     desc: Verify specs on host
     deps:
