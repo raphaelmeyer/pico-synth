@@ -73,6 +73,13 @@ describe::describe(std::string name, std::vector<it> examples) {
   registry::register_spec({name, examples});
 }
 
+void fail(std::string message, std::source_location const location) {
+  printf("!!      Failed at %s:%u\n", location.file_name(),
+         static_cast<unsigned int>(location.line()));
+  printf("          %s\n", message.c_str());
+  registry::fail();
+}
+
 void check(bool condition, std::source_location const location) {
   if (not condition) {
     printf("!!      Failed at %s:%u\n", location.file_name(),
