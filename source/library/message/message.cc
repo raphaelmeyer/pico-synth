@@ -32,6 +32,11 @@ Message Message::decode(std::array<uint8_t, 2> data) {
 
   } else if (data[1] == cmd::release) {
     return {.address = data[0], .command = Release{}};
+
+  } else if ((data[1] & 0xF0) == cmd::write_register) {
+    return {.address = data[0],
+            .command =
+                WriteRegister{.reg = static_cast<Register>(data[1] & 0x0F)}};
   }
 
   return {};
