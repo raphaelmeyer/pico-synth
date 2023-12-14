@@ -6,10 +6,28 @@ using namespace spec;
 
 namespace {
 
-describe decoding{"Decoding messages",
-                  {it{"should decode a trigger message", [] {
-                        auto const message = decode_message({0, 0, 0, 0});
-                        check(std::holds_alternative<Trigger>(message.command));
-                      }}}};
+describe encoding{
+    "Encoding and decoding messages",
+    {
+
+        it{"should encode trigger message",
+           [] {
+             Message message{.command = Trigger{}};
+             auto const encoded = message.encode();
+             auto const decoded = Message::decode(encoded);
+
+             check(std::holds_alternative<Trigger>(decoded.command));
+           }},
+
+        it{"should encode release message",
+           [] {
+             Message message{.command = Release{}};
+             auto const encoded = message.encode();
+             auto const decoded = Message::decode(encoded);
+
+             check(std::holds_alternative<Release>(decoded.command));
+           }}
+
+    }};
 
 } // namespace
