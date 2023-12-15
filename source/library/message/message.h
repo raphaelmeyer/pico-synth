@@ -2,6 +2,7 @@
 
 #include <array>
 #include <cstdint>
+#include <optional>
 #include <variant>
 
 enum class Register : uint8_t {
@@ -21,15 +22,15 @@ struct WriteRegister {
   uint16_t data{};
 };
 
+using Word = std::array<uint8_t, 2>;
+
 struct Message {
   uint8_t address{};
   std::variant<Reserved, Trigger, Release, WriteRegister> command{};
 
-  std::array<uint8_t, 2> encode() const;
+  Word encode() const;
+  std::optional<Word> data() const;
 
-  static Message decode(std::array<uint8_t, 2> data);
+  static bool has_data(Word header);
+  static Message decode(Word header, Word data = {});
 };
-
-Message decode_message(std::array<uint8_t, 4> data);
-
-bool message_has_data(std::array<uint8_t, 4> data);

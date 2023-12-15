@@ -15,10 +15,11 @@ Control::Control(config::Control const &config) : config_{config} {
 }
 
 Message Control::read() {
-  std::array<uint8_t, 4> buf{};
-  spi_read_blocking(config_.spi, 0, buf.data(), 2);
-  if (message_has_data(buf)) {
-    spi_read_blocking(config_.spi, 0, buf.data() + 2, 2);
+  Word header{};
+  Word data{};
+  spi_read_blocking(config_.spi, 0, header.data(), 2);
+  if (Message::has_data(header)) {
+    spi_read_blocking(config_.spi, 0, data.data() + 2, 2);
   }
-  return decode_message(buf);
+  return Message::decode(header, data);
 }
