@@ -23,7 +23,8 @@ namespace {
 Config const config{
     .synth = {.sampling_rate = 48000},
     .i2s = {.data = 12, .clock_ws_base = 10, .pio = pio0},
-    .control{.clock = 18, .mosi = 16, .chip_select = 17, .spi = spi0}};
+    .control{
+        .mosi = 16, .miso = 19, .clock = 18, .chip_select = 17, .spi = spi0}};
 
 PicoRandom random{};
 
@@ -74,9 +75,9 @@ void dispatch(Message const &message) {
 } // namespace
 
 int main() {
-
   bi_decl(bi_3pins_with_names(10, "BCLK", 11, "WSEL", 12, "DIN"));
-  bi_decl(bi_3pins_with_func(16, 17, 18, GPIO_FUNC_SPI));
+  bi_decl(bi_2pins_with_func(16, 17, GPIO_FUNC_SPI));
+  bi_decl(bi_2pins_with_func(18, 19, GPIO_FUNC_SPI));
 
   gpio_init(PICO_DEFAULT_LED_PIN);
   gpio_set_dir(PICO_DEFAULT_LED_PIN, true);

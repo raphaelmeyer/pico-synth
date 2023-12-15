@@ -28,6 +28,16 @@ tasks:
     cmds:
       - docker exec -it --env CTEST_OUTPUT_ON_FAILURE=1 "{{.CONTAINER}}" cmake --build /build/host --target test
 
+  specs-target:
+    desc: Download specs to target
+    deps:
+      - build-target
+    cmds:
+      - docker cp "{{.CONTAINER}}:/build/pico/library/specs/library-specs.uf2" /run/media/$USER/RPI-RP2/
+    preconditions:
+      - sh: picotool info
+        msg: "Requires Pico in BOOTSEL mode"
+
   build-host:
     internal: true
     deps:

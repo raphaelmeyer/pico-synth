@@ -10,8 +10,9 @@ Control::Control(config::Control const &config) : config_{config} {
   spi_set_slave(config_.spi, true);
 
   gpio_set_function(config_.mosi, GPIO_FUNC_SPI);
-  gpio_set_function(config.clock, GPIO_FUNC_SPI);
-  gpio_set_function(config.chip_select, GPIO_FUNC_SPI);
+  gpio_set_function(config_.miso, GPIO_FUNC_SPI);
+  gpio_set_function(config_.clock, GPIO_FUNC_SPI);
+  gpio_set_function(config_.chip_select, GPIO_FUNC_SPI);
 }
 
 Message Control::read() {
