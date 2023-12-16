@@ -1,9 +1,10 @@
 add_executable(pico-synth)
 target_sources(pico-synth PRIVATE
   main.cc
-  tone-generator.cc
-  demo.cc
   control.cc
+  demo.cc
+  mixer.cc
+  tone-generator.cc
 )
 
 target_link_libraries(pico-synth PRIVATE
