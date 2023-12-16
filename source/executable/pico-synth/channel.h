@@ -6,7 +6,7 @@
 #include "tone-generator.h"
 
 struct Channel {
-  Channel(config::Synth config, Random &random)
+  Channel(config::Synth const &config, Random &random)
       : oscillator{config, random}, envelope_generator{config, oscillator},
         tone_generator{oscillator, envelope_generator} {}
 

@@ -2,13 +2,16 @@ add_executable(midi-adapter)
 target_sources(midi-adapter PRIVATE
   main.cc
   usb_descriptors.c
+  synth.cc
 )
 
 target_link_libraries(midi-adapter PRIVATE
   pico_stdlib
+  pico_multicore
   tinyusb_device
   tinyusb_board
   device::display
+  library::message
   settings
 )
 

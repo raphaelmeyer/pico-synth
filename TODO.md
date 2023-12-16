@@ -1,8 +1,23 @@
 # TODO
 
-- Integrate communication spike
-  - Move `Control` to device
-  - Move `ToneGenerator` out of exe?
+- Use message api in midi adapter synth
+
+- Implement control register
+  - Wave form
+
+- Add volume register
+
+- Change frequency value to "f * 4" for 2 bit fraction
+
+- Reset function for synth (e.g. when spi is out of sync)
+  - Reset on {0xff, 0xff} independent of data or command? That would disable
+    value 0xffff for all register
+  - Define a reset command and just send it twice to handle case of spi out of
+    sync?
+
 - Add knobs (ADSR, wave)
   - Where? synth or midi adapter?
+
+- Move components from exes to device/library?
+
 - Require concept for include paths?

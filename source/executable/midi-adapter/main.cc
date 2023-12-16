@@ -1,6 +1,8 @@
 #include "hw_config.h"
 
-#include "display.h"
+#include "synth.h"
+
+#include <display.h>
 
 #include <lvgl.h>
 
@@ -9,6 +11,7 @@
 
 #include <hardware/gpio.h>
 #include <pico/binary_info.h>
+#include <pico/multicore.h>
 
 namespace {
 
@@ -19,29 +22,37 @@ Config const config{
                 .chip_select = 17,
                 .data_command = 20,
                 .reset = 21,
-                .spi = spi0}
+                .spi = spi0},
+
+    .synth =
+        {.mosi = 15, .miso = 12, .clock = 14, .chip_select = 13, .spi = spi1},
+
+    .led = 22
 
 };
 
+Synth synth{config.synth};
+
 lv::Display display{config.display};
 
-lv_obj_t *note = nullptr;
-
 void midi_task() {
-
   while (tud_midi_available()) {
-    uint8_t packet[4]{};
-    tud_midi_packet_read(packet); // [cable|code index][midi][midi?][midi?]
+    std::array<uint8_t, 4> packet{};
+    tud_midi_packet_read(packet.data());
 
-    if ((packet[1] & 0xf0) == 0x90) {
-      lv_label_set_text_fmt(note, "On %d, vel %d", static_cast<int>(packet[2]),
-                            static_cast<int>(packet[3]));
-    } else if ((packet[1] & 0xf0) == 0x80) {
-      lv_label_set_text_fmt(note, "Off %d", static_cast<int>(packet[2]));
-    } else {
-      lv_label_set_text_fmt(note, "%02x %02x %02x %02x", packet[0], packet[1],
-                            packet[2], packet[3]);
-    }
+    multicore_fifo_push_blocking(packet[0] | packet[1] << 8 | packet[2] << 16 |
+                                 packet[3] << 24);
+  }
+}
+
+void second_core_entry() {
+  gpio_init(config.led);
+  gpio_set_dir(config.led, true);
+  gpio_put(config.led, true);
+
+  for (;;) {
+    auto const packet = multicore_fifo_pop_blocking();
+    synth.handle(packet);
   }
 }
 
@@ -50,6 +61,8 @@ void midi_task() {
 int main() {
   bi_decl(bi_3pins_with_func(17, 18, 19, GPIO_FUNC_SPI));
   bi_decl(bi_2pins_with_names(20, "D/C", 21, "RST"));
+  bi_decl(bi_4pins_with_func(12, 13, 14, 15, GPIO_FUNC_SPI));
+  bi_decl(bi_1pin_with_name(22, "LED"));
 
   board_init();
   lv_init();
@@ -57,20 +70,21 @@ int main() {
   tud_init(BOARD_TUD_RHPORT);
 
   display.initialize();
+  synth.init();
 
-  lv_obj_t *label1 = lv_label_create(lv_scr_act());
-  lv_label_set_text(label1, "Pico Synth Midi Adapter");
-  lv_obj_set_width(label1, 128);
-  lv_obj_set_style_text_align(label1, LV_TEXT_ALIGN_CENTER, 0);
-  lv_obj_align(label1, LV_ALIGN_TOP_MID, 0, 0);
+  lv_style_t style{};
+  lv_style_init(&style);
+  lv_style_set_bg_color(&style, lv_color_hex(0x000000));
+  lv_style_set_text_color(&style, lv_color_hex(0x80C0FF));
+  lv_obj_add_style(lv_scr_act(), &style, 0);
 
-  note = lv_label_create(lv_scr_act());
-  lv_obj_set_width(note, 128);
-  lv_label_set_text(note, "");
-  lv_obj_set_style_text_align(note, LV_TEXT_ALIGN_CENTER, 0);
-  lv_obj_align(note, LV_ALIGN_TOP_MID, 0, 40);
+  lv_obj_t *title = lv_label_create(lv_scr_act());
+  lv_label_set_text(title, "Pico Synth\nMidi Adapter");
+  lv_obj_set_width(title, 128);
+  lv_obj_set_style_text_align(title, LV_TEXT_ALIGN_CENTER, 0);
+  lv_obj_align(title, LV_ALIGN_TOP_MID, 0, 0);
 
-  lv_label_set_text(note, "start");
+  multicore_launch_core1(second_core_entry);
 
   while (1) {
     tud_task();
