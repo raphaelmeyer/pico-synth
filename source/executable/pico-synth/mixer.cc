@@ -10,5 +10,5 @@ void Mixer::mix() {
                     channels_.at(1).tone_generator.next_value();
   auto const right = channels_.at(2).tone_generator.next_value() +
                      channels_.at(3).tone_generator.next_value();
-  i2s_.output_sample(left, right);
+  i2s_.output_sample(std::min(left, 65535), std::min(right, 65535));
 }

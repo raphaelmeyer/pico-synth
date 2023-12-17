@@ -17,6 +17,8 @@ public:
   Message read();
   void dispatch(Message const &message);
 
+  void setup_demo_instruments();
+
 private:
   config::Control const config_;
   Channels &channels_;

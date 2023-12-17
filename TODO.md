@@ -2,6 +2,7 @@
 
 - Implement control register
   - Wave form
+  - Hide anything except tone generator from Channel
 
 - Add volume register
 
@@ -17,5 +18,7 @@
   - Where? synth or midi adapter?
 
 - Move components from exes to device/library?
+
+- Replace demo instrument setup with something else
 
 - Require concept for include paths?

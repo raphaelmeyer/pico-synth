@@ -52,6 +52,7 @@ int main() {
   gpio_put(PICO_DEFAULT_LED_PIN, false);
 
   control.init();
+  control.setup_demo_instruments();
 
   multicore_launch_core1(second_core_entry);
   multicore_fifo_pop_blocking();

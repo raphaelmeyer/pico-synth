@@ -28,7 +28,7 @@ Message Control::read() {
 }
 
 void Control::dispatch(Message const &message) {
-  auto const id = message.address & 0x0Fu;
+  uint8_t const id = message.address & 0x0F;
   if (id >= channels_.size()) {
     return;
   }
@@ -61,4 +61,30 @@ void Control::dispatch(Message const &message) {
       break;
     }
   }
+}
+
+void Control::setup_demo_instruments() {
+  channels_.at(0).oscillator.set_type(Form::Sawtooth);
+  channels_.at(0).tone_generator.set_attack(50);
+  channels_.at(0).tone_generator.set_decay(50);
+  channels_.at(0).tone_generator.set_sustain(4096);
+  channels_.at(0).tone_generator.set_release(50);
+
+  channels_.at(1).oscillator.set_type(Form::Triangle);
+  channels_.at(1).tone_generator.set_attack(150);
+  channels_.at(1).tone_generator.set_decay(100);
+  channels_.at(1).tone_generator.set_sustain(32768);
+  channels_.at(1).tone_generator.set_release(200);
+
+  channels_.at(2).oscillator.set_type(Form::Square);
+  channels_.at(2).tone_generator.set_attack(50);
+  channels_.at(2).tone_generator.set_decay(50);
+  channels_.at(2).tone_generator.set_sustain(4096);
+  channels_.at(2).tone_generator.set_release(50);
+
+  channels_.at(3).oscillator.set_type(Form::Triangle);
+  channels_.at(3).tone_generator.set_attack(10);
+  channels_.at(3).tone_generator.set_decay(20);
+  channels_.at(3).tone_generator.set_sustain(16384);
+  channels_.at(3).tone_generator.set_release(50);
 }
