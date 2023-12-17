@@ -1,4 +1,5 @@
 #include "synth.h"
+#include "message.h"
 
 #include <array>
 
@@ -48,25 +49,26 @@ void Synth::play(uint8_t channel, uint8_t note) {
   auto const frequency =
       static_cast<uint16_t>(powf(2, (note - 69) / 12.0) * 440);
 
-  std::array<uint8_t, 2> message{};
+  Message set_frequency{
+      .address = channel,
+      .command = WriteRegister{.reg = Register::Frequency, .data = frequency}};
+  send(set_frequency);
 
-  message[0] = channel;
-  message[1] = 0x11;
-  spi_write_blocking(config_.spi, message.data(), 2);
-
-  message[0] = frequency & 0xFF;
-  message[1] = frequency >> 8;
-  spi_write_blocking(config_.spi, message.data(), 2);
-
-  message[0] = channel;
-  message[1] = 0x01;
-  spi_write_blocking(config_.spi, message.data(), 2);
+  Message trigger{.address = channel, .command = Trigger{}};
+  send(trigger);
 }
 
 void Synth::release(uint8_t channel) {
-  std::array<uint8_t, 2> message{};
+  Message release{.address = channel, .command = Release{}};
+  send(release);
+}
 
-  message[0] = channel;
-  message[1] = 0x02;
-  spi_write_blocking(config_.spi, message.data(), 2);
+void Synth ::send(Message const &message) {
+  const auto header = message.encode();
+  const auto data = message.data();
+
+  spi_write_blocking(config_.spi, header.data(), header.size());
+  if (data.has_value()) {
+    spi_write_blocking(config_.spi, data.value().data(), data.value().size());
+  }
 }

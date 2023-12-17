@@ -2,6 +2,8 @@
 
 #include "synth_config.h"
 
+struct Message;
+
 class Synth {
 public:
   Synth(config::Synth const &config) : config_{config} {};
@@ -12,6 +14,8 @@ public:
 private:
   void play(uint8_t channel, uint8_t note);
   void release(uint8_t channel);
+
+  void send(Message const &message);
 
   config::Synth const config_;
 };

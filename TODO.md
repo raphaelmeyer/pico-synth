@@ -1,7 +1,5 @@
 # TODO
 
-- Use message api in midi adapter synth
-
 - Implement control register
   - Wave form
 
