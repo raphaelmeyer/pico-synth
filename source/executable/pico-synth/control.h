@@ -9,10 +9,12 @@ struct Message;
 
 class Control {
 public:
-  Control(config::Control const &config, Channels &channels);
+  Control(config::Control const &config, Channels &channels)
+      : config_{config}, channels_{channels} {}
+
+  void init();
 
   Message read();
-
   void dispatch(Message const &message);
 
 private:

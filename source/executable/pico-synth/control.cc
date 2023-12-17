@@ -7,8 +7,7 @@
 #include <hardware/gpio.h>
 #include <hardware/spi.h>
 
-Control::Control(config::Control const &config, Channels &channels)
-    : config_{config}, channels_{channels} {
+void Control::init() {
   spi_init(config_.spi, 5'000'000);
   spi_set_slave(config_.spi, true);
 

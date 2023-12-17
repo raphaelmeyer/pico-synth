@@ -51,6 +51,8 @@ int main() {
   gpio_set_dir(PICO_DEFAULT_LED_PIN, true);
   gpio_put(PICO_DEFAULT_LED_PIN, false);
 
+  control.init();
+
   multicore_launch_core1(second_core_entry);
   multicore_fifo_pop_blocking();
 
