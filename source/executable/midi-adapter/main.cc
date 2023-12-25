@@ -27,8 +27,6 @@ Config const config{
     .synth =
         {.mosi = 15, .miso = 12, .clock = 14, .chip_select = 13, .spi = spi1},
 
-    .led = 22
-
 };
 
 Synth synth{config.synth};
@@ -46,10 +44,6 @@ void midi_task() {
 }
 
 void second_core_entry() {
-  gpio_init(config.led);
-  gpio_set_dir(config.led, true);
-  gpio_put(config.led, true);
-
   for (;;) {
     auto const packet = multicore_fifo_pop_blocking();
     synth.handle(packet);

@@ -24,7 +24,7 @@ The executable of the _pico-synth_ is generated in
 
 ### Wiring
 
-    Pico               ada3678
+#### I2S (ada3678)
 
     14 (GP 10)    ---- BCLK
     15 (GP 11)    ---- WSEL
@@ -32,6 +32,13 @@ The executable of the _pico-synth_ is generated in
 
     36 (3V3 OUT)  ---- VIN
     38 (GND)      ---- GND
+
+#### Control (SPI slave)
+
+    21 (GP 16)  MOSI
+    22 (GP 17)  CS
+    24 (GP 18)  SCK
+    25 (GP 19)  MISO
 
 ## Midi Adapter
 
@@ -41,6 +48,27 @@ The executable of the _midi-adapter_ is generated in
 ### Hardware
 
 - Raspberry Pi Pico
+- ada2088 (ST7735R)
+
+### Wiring
+
+#### Control (SPI master)
+
+    16 (GP 12)  MISO
+    17 (GP 13)  CS
+    19 (GP 14)  SCK
+    20 (GP 15)  MOSI
+
+#### Display
+
+    22 (GP 17)    ---- TCS
+    24 (GP 18)    ---- SCK
+    25 (GP 19)    ---- SI
+    26 (GP 20)    ---- D/C
+    27 (GP 21)    ---- RST
+
+    36 (3V3 OUT)  ---- VIN
+    38 (GND)      ---- GND
 
 ## Target tests
 
