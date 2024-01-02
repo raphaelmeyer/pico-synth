@@ -17,6 +17,9 @@
 - Add knobs (ADSR, wave)
   - Where? synth or midi adapter?
 
+- Smooth oscillator frequency change (contine with current level)
+- Smooth trigger when not yet released
+
 - Move components from exes to device/library?
 
 - Replace demo instrument setup with something else
