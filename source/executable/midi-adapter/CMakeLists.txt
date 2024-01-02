@@ -11,6 +11,7 @@ target_link_libraries(midi-adapter PRIVATE
   tinyusb_device
   tinyusb_board
   device::display
+  device::io
   library::message
   settings
 )
