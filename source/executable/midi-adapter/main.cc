@@ -4,6 +4,7 @@
 
 #include <display.h>
 #include <gpio_interrupt_handler.h>
+#include <push_button.h>
 #include <rotary_encoder.h>
 
 #include <lvgl.h>
@@ -39,6 +40,7 @@ lv::Display display{config.display};
 
 GpioInterruptHandler gpioIrqHandler{};
 RotaryEncoder select{{.gpio_a = 0, .gpio_b = 1}};
+PushButton confirm{{.gpio = 2}};
 
 queue_t enc_value{};
 
@@ -60,6 +62,7 @@ void second_core_entry() {
 
   gpioIrqHandler.init();
   select.init(gpioIrqHandler);
+  confirm.init(gpioIrqHandler);
 
   auto last = time_us_64();
   int value = 0;
@@ -80,6 +83,11 @@ void second_core_entry() {
 
       if (select.changed()) {
         value += select.pop_delta();
+        queue_try_add(&enc_value, &value);
+      }
+
+      if (confirm.pop_pushed()) {
+        value = 0;
         queue_try_add(&enc_value, &value);
       }
     }
