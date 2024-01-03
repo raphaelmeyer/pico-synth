@@ -25,3 +25,6 @@
 - Replace demo instrument setup with something else
 
 - Require concept for include paths?
+
+- Refactor to prevent wrong usage
+  - e.g. device init order, repeated invocation of task function etc
