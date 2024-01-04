@@ -10,6 +10,7 @@
 #include <lvgl.h>
 
 #include <bsp/board.h>
+#include <src/font/lv_symbol_def.h>
 #include <src/misc/lv_area.h>
 #include <tusb.h>
 
@@ -129,44 +130,24 @@ int main() {
   lv_obj_set_style_text_align(title, LV_TEXT_ALIGN_CENTER, 0);
   lv_obj_align(title, LV_ALIGN_TOP_MID, 0, 0);
 
-  lv_obj_t *text = lv_label_create(lv_scr_act());
-  lv_label_set_text(text, "Value: 0");
-  lv_obj_set_width(text, 128);
-  lv_obj_set_style_text_align(text, LV_TEXT_ALIGN_LEFT, 0);
-  lv_obj_set_style_text_color(text, lv_color_hex(0x80FF00), 0);
-  lv_obj_align(text, LV_ALIGN_TOP_LEFT, 0, 80);
-
   LV_IMG_DECLARE(img_square_wave);
-  lv_obj_t *icon_square = lv_img_create(lv_scr_act());
-  lv_img_set_src(icon_square, &img_square_wave);
-  lv_obj_align(icon_square, LV_ALIGN_TOP_LEFT, 0, 40);
-  lv_obj_set_size(icon_square, 16, 12);
-  lv_obj_set_style_img_recolor(icon_square, lv_color_hex(0x8000FF), 0);
-  lv_obj_set_style_img_recolor_opa(icon_square, 255, 0);
-
   LV_IMG_DECLARE(img_sawtooth_wave);
-  lv_obj_t *icon_sawtooth = lv_img_create(lv_scr_act());
-  lv_img_set_src(icon_sawtooth, &img_sawtooth_wave);
-  lv_obj_align(icon_sawtooth, LV_ALIGN_TOP_LEFT, 20, 40);
-  lv_obj_set_size(icon_sawtooth, 16, 12);
-  lv_obj_set_style_img_recolor(icon_sawtooth, lv_color_hex(0xFF8000), 0);
-  lv_obj_set_style_img_recolor_opa(icon_sawtooth, 255, 0);
-
   LV_IMG_DECLARE(img_triangle_wave);
-  lv_obj_t *icon_triangle = lv_img_create(lv_scr_act());
-  lv_img_set_src(icon_triangle, &img_triangle_wave);
-  lv_obj_align(icon_triangle, LV_ALIGN_TOP_LEFT, 40, 40);
-  lv_obj_set_size(icon_triangle, 16, 12);
-  lv_obj_set_style_img_recolor(icon_triangle, lv_color_hex(0x00FF80), 0);
-  lv_obj_set_style_img_recolor_opa(icon_triangle, 255, 0);
-
   LV_IMG_DECLARE(img_noise_wave);
-  lv_obj_t *icon_noise = lv_img_create(lv_scr_act());
-  lv_img_set_src(icon_noise, &img_noise_wave);
-  lv_obj_align(icon_noise, LV_ALIGN_TOP_LEFT, 60, 40);
-  lv_obj_set_size(icon_noise, 16, 12);
-  lv_obj_set_style_img_recolor(icon_noise, lv_color_hex(0xFFFFFF), 0);
-  lv_obj_set_style_img_recolor_opa(icon_noise, 255, 0);
+
+  lv_obj_t *icon_wave = lv_img_create(lv_scr_act());
+  lv_img_set_src(icon_wave, &img_square_wave);
+  lv_obj_align(icon_wave, LV_ALIGN_TOP_LEFT, 0, 40);
+  lv_obj_set_size(icon_wave, 16, 12);
+  lv_obj_set_style_img_recolor(icon_wave, lv_color_hex(0x8000FF), 0);
+  lv_obj_set_style_img_recolor_opa(icon_wave, 255, 0);
+
+  lv_obj_t *text_vol = lv_label_create(lv_scr_act());
+  lv_label_set_text(text_vol, LV_SYMBOL_VOLUME_MAX " 0");
+  lv_obj_set_width(text_vol, 64);
+  lv_obj_set_style_text_align(text_vol, LV_TEXT_ALIGN_LEFT, 0);
+  lv_obj_set_style_text_color(text_vol, lv_color_hex(0xFF0080), 0);
+  lv_obj_align(text_vol, LV_ALIGN_TOP_LEFT, 64, 40);
 
   multicore_launch_core1(second_core_entry);
 
@@ -176,7 +157,22 @@ int main() {
 
     int value = -1;
     if (queue_try_remove(&enc_value, &value)) {
-      lv_label_set_text_fmt(text, "Value: %d", value);
+      switch (value % 4) {
+      default:
+        lv_img_set_src(icon_wave, &img_square_wave);
+        break;
+      case 1:
+        lv_img_set_src(icon_wave, &img_sawtooth_wave);
+        break;
+      case 2:
+        lv_img_set_src(icon_wave, &img_triangle_wave);
+        break;
+      case 3:
+        lv_img_set_src(icon_wave, &img_noise_wave);
+        break;
+      }
+
+      lv_label_set_text_fmt(text_vol, LV_SYMBOL_VOLUME_MAX " %d", value);
     }
   }
 }
