@@ -10,6 +10,7 @@
 #include <lvgl.h>
 
 #include <bsp/board.h>
+#include <src/misc/lv_area.h>
 #include <tusb.h>
 
 #include <hardware/gpio.h>
@@ -133,7 +134,39 @@ int main() {
   lv_obj_set_width(text, 128);
   lv_obj_set_style_text_align(text, LV_TEXT_ALIGN_LEFT, 0);
   lv_obj_set_style_text_color(text, lv_color_hex(0x80FF00), 0);
-  lv_obj_align(text, LV_ALIGN_TOP_MID, 0, 80);
+  lv_obj_align(text, LV_ALIGN_TOP_LEFT, 0, 80);
+
+  LV_IMG_DECLARE(img_square_wave);
+  lv_obj_t *icon_square = lv_img_create(lv_scr_act());
+  lv_img_set_src(icon_square, &img_square_wave);
+  lv_obj_align(icon_square, LV_ALIGN_TOP_LEFT, 0, 40);
+  lv_obj_set_size(icon_square, 16, 12);
+  lv_obj_set_style_img_recolor(icon_square, lv_color_hex(0x8000FF), 0);
+  lv_obj_set_style_img_recolor_opa(icon_square, 255, 0);
+
+  LV_IMG_DECLARE(img_sawtooth_wave);
+  lv_obj_t *icon_sawtooth = lv_img_create(lv_scr_act());
+  lv_img_set_src(icon_sawtooth, &img_sawtooth_wave);
+  lv_obj_align(icon_sawtooth, LV_ALIGN_TOP_LEFT, 20, 40);
+  lv_obj_set_size(icon_sawtooth, 16, 12);
+  lv_obj_set_style_img_recolor(icon_sawtooth, lv_color_hex(0xFF8000), 0);
+  lv_obj_set_style_img_recolor_opa(icon_sawtooth, 255, 0);
+
+  LV_IMG_DECLARE(img_triangle_wave);
+  lv_obj_t *icon_triangle = lv_img_create(lv_scr_act());
+  lv_img_set_src(icon_triangle, &img_triangle_wave);
+  lv_obj_align(icon_triangle, LV_ALIGN_TOP_LEFT, 40, 40);
+  lv_obj_set_size(icon_triangle, 16, 12);
+  lv_obj_set_style_img_recolor(icon_triangle, lv_color_hex(0x00FF80), 0);
+  lv_obj_set_style_img_recolor_opa(icon_triangle, 255, 0);
+
+  LV_IMG_DECLARE(img_noise_wave);
+  lv_obj_t *icon_noise = lv_img_create(lv_scr_act());
+  lv_img_set_src(icon_noise, &img_noise_wave);
+  lv_obj_align(icon_noise, LV_ALIGN_TOP_LEFT, 60, 40);
+  lv_obj_set_size(icon_noise, 16, 12);
+  lv_obj_set_style_img_recolor(icon_noise, lv_color_hex(0xFFFFFF), 0);
+  lv_obj_set_style_img_recolor_opa(icon_noise, 255, 0);
 
   multicore_launch_core1(second_core_entry);
 

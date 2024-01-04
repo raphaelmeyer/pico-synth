@@ -3,6 +3,11 @@ target_sources(midi-adapter PRIVATE
   main.cc
   usb_descriptors.c
   synth.cc
+
+  icons/img_noise_wave.c
+  icons/img_sawtooth_wave.c
+  icons/img_square_wave.c
+  icons/img_triangle_wave.c
 )
 
 target_link_libraries(midi-adapter PRIVATE
