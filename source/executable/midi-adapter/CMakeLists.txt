@@ -4,6 +4,11 @@ target_sources(midi-adapter PRIVATE
   usb_descriptors.c
   synth.cc
 
+  ui/ui.cc
+  ui/oscillator_selection.cc
+  ui/range_input.cc
+  ui/wave_form_selection.cc
+
   icons/img_noise_wave.c
   icons/img_sawtooth_wave.c
   icons/img_square_wave.c

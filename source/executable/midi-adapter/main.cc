@@ -1,6 +1,8 @@
 #include "hw_config.h"
 
 #include "synth.h"
+#include "ui/ui.h"
+#include "ui/wave_form_selection.h"
 
 #include <display.h>
 #include <gpio_interrupt_handler.h>
@@ -43,6 +45,8 @@ lv::Display display{config.display};
 GpioInterruptHandler gpioIrqHandler{};
 RotaryEncoder select{{.gpio_a = 0, .gpio_b = 1}};
 PushButton confirm{{.gpio = 2}};
+
+UI ui{};
 
 queue_t enc_value{};
 
@@ -118,36 +122,7 @@ int main() {
   queue_init(&enc_value, sizeof(int), 2);
   queue_init(&packets, sizeof(uint32_t), 16);
 
-  lv_style_t style{};
-  lv_style_init(&style);
-  lv_style_set_bg_color(&style, lv_color_hex(0x000000));
-  lv_style_set_text_color(&style, lv_color_hex(0x0080FF));
-  lv_obj_add_style(lv_scr_act(), &style, 0);
-
-  lv_obj_t *title = lv_label_create(lv_scr_act());
-  lv_label_set_text(title, "Pico Synth\nMidi Adapter");
-  lv_obj_set_width(title, 128);
-  lv_obj_set_style_text_align(title, LV_TEXT_ALIGN_CENTER, 0);
-  lv_obj_align(title, LV_ALIGN_TOP_MID, 0, 0);
-
-  LV_IMG_DECLARE(img_square_wave);
-  LV_IMG_DECLARE(img_sawtooth_wave);
-  LV_IMG_DECLARE(img_triangle_wave);
-  LV_IMG_DECLARE(img_noise_wave);
-
-  lv_obj_t *icon_wave = lv_img_create(lv_scr_act());
-  lv_img_set_src(icon_wave, &img_square_wave);
-  lv_obj_align(icon_wave, LV_ALIGN_TOP_LEFT, 0, 40);
-  lv_obj_set_size(icon_wave, 16, 12);
-  lv_obj_set_style_img_recolor(icon_wave, lv_color_hex(0x8000FF), 0);
-  lv_obj_set_style_img_recolor_opa(icon_wave, 255, 0);
-
-  lv_obj_t *text_vol = lv_label_create(lv_scr_act());
-  lv_label_set_text(text_vol, LV_SYMBOL_VOLUME_MAX " 0");
-  lv_obj_set_width(text_vol, 64);
-  lv_obj_set_style_text_align(text_vol, LV_TEXT_ALIGN_LEFT, 0);
-  lv_obj_set_style_text_color(text_vol, lv_color_hex(0xFF0080), 0);
-  lv_obj_align(text_vol, LV_ALIGN_TOP_LEFT, 64, 40);
+  ui.show();
 
   multicore_launch_core1(second_core_entry);
 
@@ -157,22 +132,26 @@ int main() {
 
     int value = -1;
     if (queue_try_remove(&enc_value, &value)) {
+      auto const osc = ((value / 5) % 4) + 1;
+      ui.select_oscillator(osc);
+
       switch (value % 4) {
       default:
-        lv_img_set_src(icon_wave, &img_square_wave);
+        ui.select_wave_form(WaveForm::Square);
         break;
+
       case 1:
-        lv_img_set_src(icon_wave, &img_sawtooth_wave);
+        ui.select_wave_form(WaveForm::Sawtooth);
         break;
+
       case 2:
-        lv_img_set_src(icon_wave, &img_triangle_wave);
+        ui.select_wave_form(WaveForm::Triangle);
         break;
+
       case 3:
-        lv_img_set_src(icon_wave, &img_noise_wave);
+        ui.select_wave_form(WaveForm::Noise);
         break;
       }
-
-      lv_label_set_text_fmt(text_vol, LV_SYMBOL_VOLUME_MAX " %d", value);
     }
   }
 }
