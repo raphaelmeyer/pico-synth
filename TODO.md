@@ -20,6 +20,10 @@
 - Smooth oscillator frequency change (contine with current level)
 - Smooth trigger when not yet released
 
+- Refactor project setup
+  - Cross compiling
+  - Using find_package? For easier split of host/target executables.
+
 - Move components from exes to device/library?
 
 - Replace demo instrument setup with something else
@@ -28,3 +32,8 @@
 
 - Refactor to prevent wrong usage
   - e.g. device init order, repeated invocation of task function etc
+
+- Add host testing with doctest or similar.
+
+- Target test?
+
