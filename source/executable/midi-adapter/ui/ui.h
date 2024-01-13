@@ -22,6 +22,8 @@ public:
   void set_value(Parameter parameter, uint16_t value);
 
 private:
+  InputField *input_field(Parameter parameter);
+
   OscillatorSelection oscillator_;
   WaveFormSelection wave_form_;
 

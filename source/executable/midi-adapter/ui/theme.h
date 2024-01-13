@@ -7,6 +7,6 @@ namespace theme {
 const lv_color_t bg_color = lv_color_hex(0x000000);
 const lv_color_t text_color = lv_color_hex(0xFFFFFF);
 const lv_color_t selected_color = lv_color_hex(0xFF8000);
-const lv_color_t edit_color = lv_color_hex(0x8000FF);
+const lv_color_t edit_color = lv_color_hex(0x80FFFF);
 
 } // namespace theme

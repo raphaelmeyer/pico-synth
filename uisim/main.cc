@@ -30,7 +30,6 @@ int main() {
   disp_drv.ver_res = DISP_VER_RES;
   disp_drv.antialiasing = 1;
 
-  // disp = lv_disp_drv_register(&disp_drv);
   lv_disp_drv_register(&disp_drv);
 
   bool running = true;
@@ -47,11 +46,30 @@ int main() {
   ui.select_oscillator(2);
   ui.select_wave_form(WaveForm::Noise);
 
-  ui.focus(Parameter::Volume);
+  int count = 0;
+  ui.focus(Parameter::Decay);
 
   for (;;) {
     lv_timer_handler();
     std::this_thread::sleep_for(std::chrono::milliseconds(5));
+
+    ++count;
+    if (count % 1400 == 0) {
+      ui.focus(Parameter::Decay);
+    } else if (count % 1400 == 200) {
+      ui.edit(Parameter::Decay);
+    } else if (count % 1400 == 400) {
+      ui.set_value(Parameter::Decay, count % 54321);
+      ui.confirm(Parameter::Decay);
+    } else if (count % 1400 == 600) {
+      ui.focus(Parameter::WaveForm);
+    } else if (count % 1400 == 800) {
+      ui.focus(Parameter::WaveForm);
+    } else if (count % 1400 == 1000) {
+      ui.edit(Parameter::WaveForm);
+    } else if (count % 1400 == 1200) {
+      ui.confirm(Parameter::WaveForm);
+    }
   }
 
   running = false;

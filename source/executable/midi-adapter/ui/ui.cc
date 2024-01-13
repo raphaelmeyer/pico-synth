@@ -37,29 +37,26 @@ void UI::show() {
 }
 
 void UI::focus(Parameter parameter) {
-  // get_input(selected_).blur();
-  // get_input(parameter).focus();
+  if (auto input = input_field(selected_); input != nullptr) {
+    input->blur();
+  }
 
-  if (parameter == Parameter::Volume) {
-    volume_.focus();
+  if (auto input = input_field(parameter); input != nullptr) {
+    input->focus();
   }
 
   selected_ = parameter;
 }
 
 void UI::edit(Parameter parameter) {
-  // get_input(parameter).edit();
-
-  if (parameter == Parameter::Volume) {
-    volume_.edit();
+  if (auto input = input_field(parameter); input != nullptr) {
+    input->edit();
   }
 }
 
 void UI::confirm(Parameter parameter) {
-  // get_input(parameter).confirm();
-
-  if (parameter == Parameter::Volume) {
-    volume_.confirm();
+  if (auto input = input_field(parameter); input != nullptr) {
+    input->confirm();
   }
 }
 
@@ -68,8 +65,47 @@ void UI::select_oscillator(int id) { oscillator_.select(id); }
 void UI::select_wave_form(WaveForm wave_form) { wave_form_.select(wave_form); }
 
 void UI::set_value(Parameter parameter, uint16_t value) {
-  if (parameter == Parameter::Volume) {
+  switch (parameter) {
+  default:
+    break;
+
+  case Parameter::Volume:
     volume_.set_value(value);
+    break;
+
+  case Parameter::Attack:
+    attack_.set_value(value);
+    break;
+
+  case Parameter::Decay:
+    decay_.set_value(value);
+    break;
+
+  case Parameter::Sustain:
+    sustain_.set_value(value);
+    break;
+
+  case Parameter::Release:
+    release_.set_value(value);
+    break;
   }
-  // ...
+}
+
+InputField *UI::input_field(Parameter parameter) {
+  switch (parameter) {
+  default:
+    return nullptr;
+  case Parameter::WaveForm:
+    return &wave_form_;
+  case Parameter::Volume:
+    return &volume_;
+  case Parameter::Attack:
+    return &attack_;
+  case Parameter::Decay:
+    return &decay_;
+  case Parameter::Sustain:
+    return &sustain_;
+  case Parameter::Release:
+    return &release_;
+  }
 }
