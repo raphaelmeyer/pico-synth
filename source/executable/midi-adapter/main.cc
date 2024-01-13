@@ -1,5 +1,6 @@
 #include "hw_config.h"
 
+#include "knob.h"
 #include "synth.h"
 #include "ui/ui.h"
 #include "ui/wave_form_selection.h"
@@ -12,8 +13,6 @@
 #include <lvgl.h>
 
 #include <bsp/board.h>
-#include <src/font/lv_symbol_def.h>
-#include <src/misc/lv_area.h>
 #include <tusb.h>
 
 #include <hardware/gpio.h>
@@ -45,12 +44,13 @@ lv::Display display{config.display};
 GpioInterruptHandler gpioIrqHandler{};
 RotaryEncoder select{{.gpio_a = 0, .gpio_b = 1}};
 PushButton confirm{{.gpio = 2}};
+Knob knob{select, confirm};
 
 UI ui{};
 
-queue_t enc_value{};
-
 queue_t packets{};
+
+// ----- Core 0 -----
 
 void midi_task() {
   while (tud_midi_available()) {
@@ -63,16 +63,22 @@ void midi_task() {
   }
 }
 
-void second_core_entry() {
+void task_core0() {
+  for (;;) {
+    tud_task();
+    midi_task();
+  }
+}
+
+// ----- Core 1 -----
+
+void task_core1() {
   synth.init();
 
   gpioIrqHandler.init();
   select.init(gpioIrqHandler);
   confirm.init(gpioIrqHandler);
-
-  auto last = time_us_64();
-  int value = 0;
-  queue_add_blocking(&enc_value, &value);
+  knob.init();
 
   for (;;) {
     uint32_t packet{};
@@ -82,21 +88,7 @@ void second_core_entry() {
     }
 
     gpioIrqHandler.task();
-
-    auto const now = time_us_64();
-    if (now - last > 100'000ull) {
-      last = now;
-
-      if (select.changed()) {
-        value += select.pop_delta();
-        queue_try_add(&enc_value, &value);
-      }
-
-      if (confirm.pop_pushed()) {
-        value = 0;
-        queue_try_add(&enc_value, &value);
-      }
-    }
+    knob.task();
   }
 }
 
@@ -119,39 +111,11 @@ int main() {
 
   display.initialize();
 
-  queue_init(&enc_value, sizeof(int), 2);
   queue_init(&packets, sizeof(uint32_t), 16);
 
   ui.show();
 
-  multicore_launch_core1(second_core_entry);
+  multicore_launch_core1(task_core1);
 
-  for (;;) {
-    tud_task();
-    midi_task();
-
-    int value = -1;
-    if (queue_try_remove(&enc_value, &value)) {
-      auto const osc = ((value / 5) % 4) + 1;
-      ui.select_oscillator(osc);
-
-      switch (value % 4) {
-      default:
-        ui.select_wave_form(WaveForm::Square);
-        break;
-
-      case 1:
-        ui.select_wave_form(WaveForm::Sawtooth);
-        break;
-
-      case 2:
-        ui.select_wave_form(WaveForm::Triangle);
-        break;
-
-      case 3:
-        ui.select_wave_form(WaveForm::Noise);
-        break;
-      }
-    }
-  }
+  task_core0();
 }

@@ -32,7 +32,7 @@ Channels channels{{{config.synth, random},
 Control control{config.control, channels};
 Mixer mixer{channels, i2s};
 
-void second_core_entry() {
+void main_core1() {
   i2s.init();
   multicore_fifo_push_blocking(1234);
   for (;;) {
@@ -54,7 +54,7 @@ int main() {
   control.init();
   control.setup_demo_instruments();
 
-  multicore_launch_core1(second_core_entry);
+  multicore_launch_core1(main_core1);
   multicore_fifo_pop_blocking();
 
   gpio_put(PICO_DEFAULT_LED_PIN, true);

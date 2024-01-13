@@ -16,11 +16,9 @@ void RotaryEncoder::init(GpioInterruptHandler &irq) {
   irq.subscribe(config_.gpio_a, [this] { on_event(); });
 }
 
-bool RotaryEncoder::changed() const { return delta_ != 0; }
-
-int32_t RotaryEncoder::pop_delta() {
-  auto const result = delta_;
-  delta_ = 0;
+int RotaryEncoder::steps() {
+  auto const result = steps_;
+  steps_ = 0;
   return result;
 }
 
@@ -42,14 +40,14 @@ void RotaryEncoder::on_event() {
 
     case State::CW: {
       if (current_a && (not current_b)) {
-        ++delta_;
+        ++steps_;
       }
       state_ = State::Idle;
     } break;
 
     case State::CCW: {
       if (current_a && current_b) {
-        --delta_;
+        --steps_;
       }
       state_ = State::Idle;
     } break;

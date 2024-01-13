@@ -10,7 +10,7 @@ public:
 
   void init(GpioInterruptHandler &irq);
 
-  bool pop_pushed();
+  bool pushed();
 
 private:
   void on_event();

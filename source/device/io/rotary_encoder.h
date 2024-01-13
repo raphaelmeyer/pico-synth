@@ -10,8 +10,7 @@ public:
 
   void init(GpioInterruptHandler &irq);
 
-  bool changed() const;
-  int32_t pop_delta();
+  int steps();
 
 private:
   void on_event();
@@ -22,5 +21,5 @@ private:
 
   State state_{State::Idle};
   bool previous_a_{};
-  int32_t delta_{};
+  int steps_{};
 };

@@ -19,7 +19,7 @@ void PushButton::init(GpioInterruptHandler &irq) {
   irq.subscribe(config_.gpio, [this] { on_event(); });
 }
 
-bool PushButton::pop_pushed() {
+bool PushButton::pushed() {
   auto const result = pushed_;
   pushed_ = false;
   return result;
