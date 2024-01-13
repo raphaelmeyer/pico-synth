@@ -1,5 +1,6 @@
 #include "hw_config.h"
 
+#include "controller.h"
 #include "knob.h"
 #include "synth.h"
 #include "ui/ui.h"
@@ -37,6 +38,8 @@ Config const config{
 
 };
 
+constexpr std::initializer_list<int> const oscillator_ids{1, 2, 3, 4};
+
 Synth synth{config.synth};
 
 lv::Display display{config.display};
@@ -47,6 +50,8 @@ PushButton confirm{{.gpio = 2}};
 Knob knob{select, confirm};
 
 UI ui{};
+
+Controller controller{knob, ui, oscillator_ids};
 
 queue_t packets{};
 
@@ -67,6 +72,8 @@ void task_core0() {
   for (;;) {
     tud_task();
     midi_task();
+
+    controller.task();
   }
 }
 

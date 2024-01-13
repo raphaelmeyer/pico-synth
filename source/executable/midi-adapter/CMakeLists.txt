@@ -2,7 +2,9 @@ add_executable(midi-adapter)
 target_sources(midi-adapter PRIVATE
   main.cc
   usb_descriptors.c
+  controller.cc
   knob.cc
+  selector.cc
   synth.cc
 
   ui/ui.cc

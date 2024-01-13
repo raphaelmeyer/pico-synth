@@ -4,7 +4,7 @@
 
 #include <lvgl.h>
 
-enum class WaveForm { Square, Triangle, Sawtooth, Noise };
+enum class WaveForm { Noise, Square, Triangle, Sawtooth };
 
 class WaveFormSelection : public InputField {
 
