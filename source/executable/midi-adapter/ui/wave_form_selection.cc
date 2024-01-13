@@ -16,11 +16,19 @@ void WaveFormSelection::show() {
   lv_obj_set_style_text_align(ui_label_, LV_TEXT_ALIGN_LEFT, 0);
   lv_obj_align(ui_label_, LV_ALIGN_TOP_LEFT, 2, y_);
 
+  lv_obj_set_style_text_color(ui_label_, theme::selected_color,
+                              LV_STATE_FOCUSED);
+  lv_obj_set_style_text_color(ui_label_, theme::edit_color, LV_STATE_EDITED);
+
   ui_icon_ = lv_img_create(lv_scr_act());
   lv_obj_align(ui_icon_, LV_ALIGN_TOP_LEFT, 16, y_ + 16);
   lv_obj_set_size(ui_icon_, 16, 12);
   lv_obj_set_style_img_recolor(ui_icon_, theme::text_color, 0);
   lv_obj_set_style_img_recolor_opa(ui_icon_, 255, 0);
+
+  lv_obj_set_style_img_recolor(ui_icon_, theme::selected_color,
+                               LV_STATE_FOCUSED);
+  lv_obj_set_style_img_recolor(ui_icon_, theme::edit_color, LV_STATE_EDITED);
 
   lv_img_set_src(ui_icon_, &img_square_wave);
 }
@@ -43,4 +51,24 @@ void WaveFormSelection::select(WaveForm wave_form) {
     lv_img_set_src(ui_icon_, &img_noise_wave);
     break;
   }
+}
+
+void WaveFormSelection::focus() {
+  lv_obj_add_state(ui_label_, LV_STATE_FOCUSED);
+  lv_obj_add_state(ui_icon_, LV_STATE_FOCUSED);
+}
+
+void WaveFormSelection::blur() {
+  lv_obj_clear_state(ui_label_, LV_STATE_FOCUSED);
+  lv_obj_clear_state(ui_icon_, LV_STATE_FOCUSED);
+}
+
+void WaveFormSelection::edit() {
+  lv_obj_add_state(ui_label_, LV_STATE_EDITED);
+  lv_obj_add_state(ui_icon_, LV_STATE_EDITED);
+}
+
+void WaveFormSelection::confirm() {
+  lv_obj_clear_state(ui_label_, LV_STATE_EDITED);
+  lv_obj_clear_state(ui_icon_, LV_STATE_EDITED);
 }

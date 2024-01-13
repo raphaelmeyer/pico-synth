@@ -1,3 +1,4 @@
+#include "ui/parameter.h"
 #include "ui/wave_form_selection.h"
 #include "x11.h"
 
@@ -11,11 +12,6 @@
 
 int main() {
   lv_init();
-
-  // lv_group_t *g = lv_group_create();
-  // lv_group_set_default(g);
-
-  // lv_disp_t *disp = NULL;
 
   lv_x11_init("LVGL Simulator", DISP_HOR_RES, DISP_VER_RES);
 
@@ -50,6 +46,8 @@ int main() {
 
   ui.select_oscillator(2);
   ui.select_wave_form(WaveForm::Noise);
+
+  ui.focus(Parameter::Volume);
 
   for (;;) {
     lv_timer_handler();

@@ -36,6 +36,40 @@ void UI::show() {
   release_.show();
 }
 
+void UI::focus(Parameter parameter) {
+  // get_input(selected_).blur();
+  // get_input(parameter).focus();
+
+  if (parameter == Parameter::Volume) {
+    volume_.focus();
+  }
+
+  selected_ = parameter;
+}
+
+void UI::edit(Parameter parameter) {
+  // get_input(parameter).edit();
+
+  if (parameter == Parameter::Volume) {
+    volume_.edit();
+  }
+}
+
+void UI::confirm(Parameter parameter) {
+  // get_input(parameter).confirm();
+
+  if (parameter == Parameter::Volume) {
+    volume_.confirm();
+  }
+}
+
 void UI::select_oscillator(int id) { oscillator_.select(id); }
 
 void UI::select_wave_form(WaveForm wave_form) { wave_form_.select(wave_form); }
+
+void UI::set_value(Parameter parameter, uint16_t value) {
+  if (parameter == Parameter::Volume) {
+    volume_.set_value(value);
+  }
+  // ...
+}

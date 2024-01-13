@@ -1,10 +1,12 @@
 #pragma once
 
+#include "ui/input_field.h"
+
 #include <lvgl.h>
 
 enum class WaveForm { Square, Triangle, Sawtooth, Noise };
 
-class WaveFormSelection {
+class WaveFormSelection : public InputField {
 
 public:
   WaveFormSelection(lv_coord_t y);
@@ -12,6 +14,12 @@ public:
   void show();
 
   void select(WaveForm wave_form);
+
+  void focus() override;
+  void blur() override;
+
+  void edit() override;
+  void confirm() override;
 
 private:
   lv_coord_t const y_;
