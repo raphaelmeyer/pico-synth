@@ -38,19 +38,43 @@ Controller::Controller(Knob &knob, UI &ui,
     : knob_{knob}, ui_{ui}, selector_{oscillators} {
 
   for (auto const id : oscillators) {
-    parameters_.insert({id, {}});
+    parameters_.insert({id,
+                        {WaveForm::Square,
+                         {{Parameter::Volume, 16384},
+                          {Parameter::Attack, 100},
+                          {Parameter::Decay, 200},
+                          {Parameter::Sustain, 16384},
+                          {Parameter::Release, 1024}}}});
   }
+}
+
+void Controller::init() {
+  auto const selected = selector_.selected();
+
+  ui_.select_oscillator(selected.oscillator);
+  ui_.select_wave_form(parameters_[selected.oscillator].wave_form);
+
+  for (auto const parameter :
+       {Parameter::Volume, Parameter::Attack, Parameter::Decay,
+        Parameter::Sustain, Parameter::Release}) {
+    ui_.set_value(parameter,
+                  parameters_[selected.oscillator].values[parameter]);
+  }
+
+  ui_.focus(selected.parameter);
 }
 
 void Controller::task() {
   auto const event = knob_.event();
 
   if (std::holds_alternative<Knob::Push>(event)) {
+    auto const index = selector_.selected();
+
     if (state_ == State::Select) {
-      ui_.edit(Parameter::Attack);
+      ui_.edit(index.parameter);
       state_ = State::Edit;
     } else if (state_ == State::Edit) {
-      ui_.confirm(Parameter::Attack);
+      ui_.confirm(index.parameter);
       state_ = State::Select;
     }
   }
@@ -71,10 +95,14 @@ void Controller::update_selection(int steps) {
 
   if (previous.oscillator != updated.oscillator) {
     ui_.select_oscillator(updated.oscillator);
-    ui_.select_wave_form(parameters_.at(updated.oscillator).wave_form);
+    ui_.select_wave_form(parameters_[updated.oscillator].wave_form);
 
-    // TODO
-    // for (param : params) { ui_.set_value(param, ...);
+    for (auto const parameter :
+         {Parameter::Volume, Parameter::Attack, Parameter::Decay,
+          Parameter::Sustain, Parameter::Release}) {
+      ui_.set_value(parameter,
+                    parameters_[updated.oscillator].values[parameter]);
+    }
   }
 
   if (previous.parameter != updated.parameter) {
@@ -85,20 +113,19 @@ void Controller::update_selection(int steps) {
 void Controller::update_parameter(int steps) {
   auto const index = selector_.selected();
   if (index.parameter == Parameter::WaveForm) {
-    auto const previous = parameters_.at(index.oscillator).wave_form;
+    auto const previous = parameters_[index.oscillator].wave_form;
     auto const updated = change_wave_form(previous, steps);
     if (previous != updated) {
-      parameters_.at(index.oscillator).wave_form = updated;
+      parameters_[index.oscillator].wave_form = updated;
       ui_.select_wave_form(updated);
     }
   } else {
     // TODO: 'log' adjust steps
 
-    auto const previous =
-        parameters_.at(index.oscillator).values.at(index.parameter);
+    auto const previous = parameters_[index.oscillator].values[index.parameter];
 
     uint16_t const updated = std::min(std::max(0, previous + steps), 65535);
-    parameters_.at(index.oscillator).values[index.parameter] = updated;
+    parameters_[index.oscillator].values[index.parameter] = updated;
 
     ui_.set_value(index.parameter, updated);
   }

@@ -12,11 +12,13 @@ class Controller {
 public:
   Controller(Knob &knob, UI &ui, std::initializer_list<int> oscillators);
 
+  void init();
   void task();
 
 private:
   void update_selection(int steps);
   void update_parameter(int steps);
+  void refresh_ui();
 
   enum class State { Select, Edit };
 

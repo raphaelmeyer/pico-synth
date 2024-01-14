@@ -69,6 +69,8 @@ void midi_task() {
 }
 
 void task_core0() {
+  controller.init();
+
   for (;;) {
     tud_task();
     midi_task();
@@ -106,6 +108,7 @@ int main() {
   bi_decl(bi_2pins_with_names(20, "D/C", 21, "RST"));
   bi_decl(bi_4pins_with_func(12, 13, 14, 15, GPIO_FUNC_SPI));
   bi_decl(bi_1pin_with_name(22, "LED"));
+  bi_decl(bi_3pins_with_names(0, "A", 1, "B", 2, "S"));
 
   gpio_init(22);
   gpio_set_dir(22, GPIO_OUT);
