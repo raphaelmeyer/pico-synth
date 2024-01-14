@@ -24,7 +24,7 @@
 
 namespace {
 
-Config const config{
+Config const hw_config{
 
     .display = {.clock = 18,
                 .mosi = 19,
@@ -36,17 +36,22 @@ Config const config{
     .synth =
         {.mosi = 15, .miso = 12, .clock = 14, .chip_select = 13, .spi = spi1},
 
+    .select = {.gpio_a = 0, .gpio_b = 1},
+    .confirm = {.gpio = 2},
+
+    .power_led = 22
+
 };
 
 constexpr std::initializer_list<int> const oscillator_ids{1, 2, 3, 4};
 
-Synth synth{config.synth};
+Synth synth{hw_config.synth};
 
-lv::Display display{config.display};
+lv::Display display{hw_config.display};
 
 GpioInterruptHandler gpioIrqHandler{};
-RotaryEncoder select{{.gpio_a = 0, .gpio_b = 1}};
-PushButton confirm{{.gpio = 2}};
+RotaryEncoder select{hw_config.select};
+PushButton confirm{hw_config.confirm};
 Knob knob{select, confirm};
 
 UI ui{};
@@ -110,9 +115,9 @@ int main() {
   bi_decl(bi_1pin_with_name(22, "LED"));
   bi_decl(bi_3pins_with_names(0, "A", 1, "B", 2, "S"));
 
-  gpio_init(22);
-  gpio_set_dir(22, GPIO_OUT);
-  gpio_put(22, true);
+  gpio_init(hw_config.power_led);
+  gpio_set_dir(hw_config.power_led, GPIO_OUT);
+  gpio_put(hw_config.power_led, true);
 
   board_init();
   lv_init();

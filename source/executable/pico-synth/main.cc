@@ -15,21 +15,21 @@
 
 namespace {
 
-Config const config{
+Config const hw_config{
     .synth = {.sampling_rate = 48000},
     .i2s = {.data = 12, .clock_ws_base = 10, .pio = pio0},
     .control{
         .mosi = 16, .miso = 19, .clock = 18, .chip_select = 17, .spi = spi0}};
 
 PicoRandom random{};
-I2S i2s{config.i2s, config.synth.sampling_rate};
+I2S i2s{hw_config.i2s, hw_config.synth.sampling_rate};
 
-Channels channels{{{config.synth, random},
-                   {config.synth, random},
-                   {config.synth, random},
-                   {config.synth, random}}};
+Channels channels{{{hw_config.synth, random},
+                   {hw_config.synth, random},
+                   {hw_config.synth, random},
+                   {hw_config.synth, random}}};
 
-Control control{config.control, channels};
+Control control{hw_config.control, channels};
 Mixer mixer{channels, i2s};
 
 void main_core1() {
