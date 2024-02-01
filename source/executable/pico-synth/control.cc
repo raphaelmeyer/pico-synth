@@ -59,6 +59,9 @@ void Control::dispatch(Message const &message) {
     case Register::Release:
       channel.tone_generator.set_release(wr->data);
       break;
+    case Register::Volume:
+      channel.tone_generator.set_volume(wr->data);
+      break;
     }
   }
 }

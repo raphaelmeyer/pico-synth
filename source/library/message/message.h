@@ -11,7 +11,8 @@ enum class Register : uint8_t {
   Attack = 0x2,
   Decay = 0x3,
   Sustain = 0x4,
-  Release = 0x5
+  Release = 0x5,
+  Volume = 0x6,
 };
 
 struct Reserved {};

@@ -26,6 +26,7 @@ Remarks
     0x3   Decay
     0x4   Sustain
     0x5   Release
+    0x6   Volume
 
 Control register:
 

@@ -17,6 +17,7 @@ public:
   void set_decay(uint16_t decay);
   void set_sustain(uint16_t sustain);
   void set_release(uint16_t release);
+  void set_volume(uint16_t volume);
 
 private:
   config::Synth const config_;
@@ -29,6 +30,7 @@ private:
   int32_t decay_{};
   uint16_t sustain_{};
   int32_t release_{};
+  int32_t volume_{};
 
   int32_t ticks_{};
 };

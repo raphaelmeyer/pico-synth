@@ -67,6 +67,14 @@ void ToneGenerator::set_release(uint16_t release) {
   mutex_exit(&m_);
 }
 
+void ToneGenerator::set_volume(uint16_t volume) {
+  while (!mutex_try_enter(&m_, nullptr)) {
+    sleep_us(10);
+  }
+  envelope_generator_.set_volume(volume);
+  mutex_exit(&m_);
+}
+
 uint16_t ToneGenerator::next_value() {
   mutex_enter_blocking(&m_);
   uint16_t const value = envelope_generator_.next_value();

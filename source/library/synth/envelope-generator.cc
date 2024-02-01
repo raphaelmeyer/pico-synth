@@ -41,7 +41,8 @@ uint16_t EnvelopeGenerator::next_value() {
 
   ++ticks_;
 
-  return (source_.next_value() * level) / 65535;
+  auto const value = (source_.next_value() * level) / 65535;
+  return (value * volume_) / 65535;
 }
 
 void EnvelopeGenerator::trigger() {
@@ -76,3 +77,5 @@ void EnvelopeGenerator::set_sustain(uint16_t level) { sustain_ = level; }
 void EnvelopeGenerator::set_release(uint16_t ms) {
   release_ = ms * config_.sampling_rate / 1000;
 }
+
+void EnvelopeGenerator::set_volume(uint16_t volume) { volume_ = volume; }
