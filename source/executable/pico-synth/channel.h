@@ -5,12 +5,15 @@
 
 #include "tone-generator.h"
 
-struct Channel {
+class Channel {
+public:
   Channel(config::Synth const &config, Random &random)
-      : oscillator{config, random}, envelope_generator{config, oscillator},
-        tone_generator{oscillator, envelope_generator} {}
+      : tone_generator{oscillator, envelope_generator},
+        oscillator{config, random}, envelope_generator{config, oscillator} {}
 
+  ToneGenerator tone_generator;
+
+private:
   Oscillator oscillator;
   EnvelopeGenerator envelope_generator;
-  ToneGenerator tone_generator;
 };

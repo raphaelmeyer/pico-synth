@@ -1,11 +1,5 @@
 # TODO
 
-- Implement control register
-  - Wave form
-  - Hide anything except tone generator from Channel
-
-- Add volume register
-
 - Change frequency value to "f * 4" for 2 bit fraction
 
 - Reset function for synth (e.g. when spi is out of sync)
@@ -13,9 +7,6 @@
     value 0xffff for all register
   - Define a reset command and just send it twice to handle case of spi out of
     sync?
-
-- Add knobs (ADSR, wave)
-  - Where? synth or midi adapter?
 
 - Smooth oscillator frequency change (contine with current level)
 - Smooth trigger when not yet released
@@ -25,8 +16,6 @@
   - Using find_package? For easier split of host/target executables.
 
 - Move components from exes to device/library?
-
-- Replace demo instrument setup with something else
 
 - Require concept for include paths?
 
