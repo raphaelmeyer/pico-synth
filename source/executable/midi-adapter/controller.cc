@@ -33,6 +33,23 @@ WaveForm change_wave_form(WaveForm previous, int steps) {
   }
 }
 
+uint16_t encode_wave_form(WaveForm form) {
+  switch (form) {
+  default:
+  case WaveForm::Noise:
+    return 0;
+
+  case WaveForm::Square:
+    return 1;
+
+  case WaveForm::Triangle:
+    return 2;
+
+  case WaveForm::Sawtooth:
+    return 3;
+  }
+}
+
 } // namespace
 
 Controller::Controller(Knob &knob, UI &ui, Synth &synth,
@@ -139,8 +156,14 @@ void Controller::update_synth(Parameter parameter, int oscillator) {
   auto const channel = static_cast<uint8_t>(oscillator);
 
   switch (parameter) {
-  case Parameter::WaveForm:
-    break;
+  case Parameter::WaveForm: {
+    auto const message = Message{
+        .address = channel,
+        .command = WriteRegister{
+            .reg = Register::Control,
+            .data = encode_wave_form(parameters_[oscillator].wave_form)}};
+    synth_.send(message);
+  } break;
 
   case Parameter::Volume: {
     auto const message =
