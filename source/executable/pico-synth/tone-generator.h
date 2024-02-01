@@ -1,5 +1,7 @@
 #pragma once
 
+#include "oscillator.h"
+
 #include <pico/mutex.h>
 
 class Oscillator;
@@ -13,6 +15,7 @@ public:
   void release();
 
   void set_frequency(uint16_t frequency);
+  void set_wave_form(Form form);
 
   void set_attack(uint16_t attack);
   void set_decay(uint16_t decay);

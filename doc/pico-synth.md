@@ -30,7 +30,7 @@ Remarks
 
 Control register:
 
-    Reserved:4 | Wave:4 | Reserved:8
+    Reserved:12 | Wave:4
 
 Wave:
 

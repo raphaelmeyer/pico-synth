@@ -1,11 +1,30 @@
 #include "control.h"
 
 #include "channel.h"
+#include "oscillator.h"
 
 #include <message.h>
 
 #include <hardware/gpio.h>
 #include <hardware/spi.h>
+
+namespace {
+Form wave_form_from_control(uint16_t control) {
+  switch (control & 0x0f) {
+  default:
+    return Form::Noise;
+
+  case 1:
+    return Form::Square;
+
+  case 2:
+    return Form::Triangle;
+
+  case 3:
+    return Form::Sawtooth;
+  }
+}
+} // namespace
 
 void Control::init() {
   spi_init(config_.spi, 5'000'000);
@@ -42,8 +61,9 @@ void Control::dispatch(Message const &message) {
   } else if (auto const *wr = std::get_if<WriteRegister>(&message.command);
              wr != nullptr) {
     switch (wr->reg) {
-    case Register::Control:
-      break;
+    case Register::Control: {
+      channel.tone_generator.set_wave_form(wave_form_from_control(wr->data));
+    } break;
     case Register::Frequency:
       channel.tone_generator.set_frequency(wr->data);
       break;

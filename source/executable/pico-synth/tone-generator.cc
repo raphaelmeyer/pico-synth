@@ -35,6 +35,14 @@ void ToneGenerator::set_frequency(uint16_t frequency) {
   mutex_exit(&m_);
 }
 
+void ToneGenerator::set_wave_form(Form form) {
+  while (!mutex_try_enter(&m_, nullptr)) {
+    sleep_us(10);
+  }
+  oscillator_.set_type(form);
+  mutex_exit(&m_);
+}
+
 void ToneGenerator::set_attack(uint16_t attack) {
   while (!mutex_try_enter(&m_, nullptr)) {
     sleep_us(10);
