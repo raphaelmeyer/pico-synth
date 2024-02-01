@@ -175,10 +175,44 @@ void Controller::update_synth(Parameter parameter, int oscillator) {
     synth_.send(message);
   } break;
 
-  case Parameter::Attack:
-  case Parameter::Decay:
-  case Parameter::Sustain:
-  case Parameter::Release:
-    break;
+  case Parameter::Attack: {
+    auto const message =
+        Message{.address = channel,
+                .command = WriteRegister{
+                    .reg = Register::Attack,
+                    .data = parameters_[oscillator].values[parameter]}};
+
+    synth_.send(message);
+  } break;
+
+  case Parameter::Decay: {
+    auto const message =
+        Message{.address = channel,
+                .command = WriteRegister{
+                    .reg = Register::Decay,
+                    .data = parameters_[oscillator].values[parameter]}};
+
+    synth_.send(message);
+  } break;
+
+  case Parameter::Sustain: {
+    auto const message =
+        Message{.address = channel,
+                .command = WriteRegister{
+                    .reg = Register::Sustain,
+                    .data = parameters_[oscillator].values[parameter]}};
+
+    synth_.send(message);
+  } break;
+
+  case Parameter::Release: {
+    auto const message =
+        Message{.address = channel,
+                .command = WriteRegister{
+                    .reg = Register::Release,
+                    .data = parameters_[oscillator].values[parameter]}};
+
+    synth_.send(message);
+  } break;
   }
 }
