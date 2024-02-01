@@ -70,6 +70,14 @@ Controller::Controller(Knob &knob, UI &ui, Synth &synth,
 void Controller::init() {
   auto const selected = selector_.selected();
 
+  for (auto const &oscillator : parameters_) {
+    for (auto const parameter :
+         {Parameter::WaveForm, Parameter::Volume, Parameter::Attack,
+          Parameter::Decay, Parameter::Sustain, Parameter::Release}) {
+      update_synth(parameter, oscillator.first);
+    }
+  }
+
   ui_.select_oscillator(selected.oscillator);
   ui_.select_wave_form(parameters_[selected.oscillator].wave_form);
 
