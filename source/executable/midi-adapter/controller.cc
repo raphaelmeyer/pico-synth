@@ -147,11 +147,11 @@ void Controller::update_parameter(int steps) {
       ui_.select_wave_form(updated);
     }
   } else {
-    // TODO: 'log' adjust steps
-
     auto const previous = parameters_[index.oscillator].values[index.parameter];
 
-    uint16_t const updated = std::min(std::max(0, previous + steps), 65535);
+    auto const log_steps =
+        steps > 2 ? (2 << steps) : (steps < -2 ? (-(2 << (-steps))) : steps);
+    uint16_t const updated = std::min(std::max(0, previous + log_steps), 65535);
     parameters_[index.oscillator].values[index.parameter] = updated;
 
     ui_.set_value(index.parameter, updated);
