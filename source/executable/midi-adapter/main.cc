@@ -56,7 +56,7 @@ Knob knob{select, confirm};
 
 UI ui{};
 
-Controller controller{knob, ui, oscillator_ids};
+Controller controller{knob, ui, synth, oscillator_ids};
 
 queue_t packets{};
 

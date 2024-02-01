@@ -1,6 +1,8 @@
 #include "controller.h"
 
 #include "knob.h"
+#include "message.h"
+#include "synth.h"
 #include "ui/parameter.h"
 #include "ui/ui.h"
 #include "ui/wave_form_selection.h"
@@ -33,9 +35,9 @@ WaveForm change_wave_form(WaveForm previous, int steps) {
 
 } // namespace
 
-Controller::Controller(Knob &knob, UI &ui,
+Controller::Controller(Knob &knob, UI &ui, Synth &synth,
                        std::initializer_list<int> oscillators)
-    : knob_{knob}, ui_{ui}, selector_{oscillators} {
+    : knob_{knob}, ui_{ui}, synth_{synth}, selector_{oscillators} {
 
   for (auto const id : oscillators) {
     parameters_.insert({id,
@@ -128,5 +130,32 @@ void Controller::update_parameter(int steps) {
     parameters_[index.oscillator].values[index.parameter] = updated;
 
     ui_.set_value(index.parameter, updated);
+  }
+
+  update_synth(index.parameter, index.oscillator);
+}
+
+void Controller::update_synth(Parameter parameter, int oscillator) {
+  auto const channel = static_cast<uint8_t>(oscillator);
+
+  switch (parameter) {
+  case Parameter::WaveForm:
+    break;
+
+  case Parameter::Volume: {
+    auto const message =
+        Message{.address = channel,
+                .command = WriteRegister{
+                    .reg = Register::Volume,
+                    .data = parameters_[oscillator].values[parameter]}};
+
+    synth_.send(message);
+  } break;
+
+  case Parameter::Attack:
+  case Parameter::Decay:
+  case Parameter::Sustain:
+  case Parameter::Release:
+    break;
   }
 }

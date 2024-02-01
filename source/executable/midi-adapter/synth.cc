@@ -63,7 +63,7 @@ void Synth::release(uint8_t channel) {
   send(release);
 }
 
-void Synth ::send(Message const &message) {
+void Synth::send(Message const &message) {
   const auto header = message.encode();
   const auto data = message.data();
 

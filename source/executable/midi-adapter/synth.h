@@ -11,11 +11,11 @@ public:
   void init();
   void handle(uint32_t packet);
 
+  void send(Message const &message);
+
 private:
   void play(uint8_t channel, uint8_t note);
   void release(uint8_t channel);
-
-  void send(Message const &message);
 
   config::Synth const config_;
 };
