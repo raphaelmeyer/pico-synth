@@ -5,10 +5,10 @@
       "name": "pico",
       "displayName": "Pico Config",
       "generator": "Ninja",
-      "binaryDir": "/build/pico",
+      "binaryDir": "${sourceParentDir}/_build/pico",
       "cacheVariables": {
-        "BUILD_TARGET_PICO": true,
-        "CMAKE_EXPORT_COMPILE_COMMANDS": true,
+        "PICO_BOARD": "pico",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
         "CMAKE_BUILD_TYPE": "Release"
       }
     },
@@ -16,10 +16,14 @@
       "name": "host",
       "displayName": "Host Config",
       "generator": "Ninja",
-      "binaryDir": "/build/host",
+      "binaryDir": "${sourceParentDir}/_build/host",
       "cacheVariables": {
-        "CMAKE_EXPORT_COMPILE_COMMANDS": true,
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
         "CMAKE_BUILD_TYPE": "Debug"
+      },
+      "environment": {
+        "CC": "gcc",
+        "CXX": "g++"
       }
     }
   ],

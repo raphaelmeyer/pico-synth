@@ -13,7 +13,6 @@
     "editor.renderWhitespace": "boundary",
     "editor.tabSize": 2,
     "editor.formatOnSave": true,
-    "editor.insertSpaces": true,
     "[json][jsonc]": {
       "editor.defaultFormatter": "vscode.json-language-features"
     }

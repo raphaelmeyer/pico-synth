@@ -13,14 +13,14 @@
       "settings": {
         "cmake.sourceDirectory": "/workspace/source",
         "cmake.useCMakePresets": "always",
-        "cmake.copyCompileCommands": "/build/compile_commands.json",
+        "cmake.copyCompileCommands": "/workspace/_build/compile_commands.json",
         "editor.formatOnSave": true,
         "[cpp]": {
           "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
           "editor.inlayHints.enabled": "off"
         },
         "clangd.arguments": [
-          "--compile-commands-dir=/build",
+          "--compile-commands-dir=/workspace/_build",
           "--query-driver=/usr/bin/arm-none-eabi-g++"
         ]
       }

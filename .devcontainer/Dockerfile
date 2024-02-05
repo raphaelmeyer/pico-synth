@@ -1,4 +1,4 @@
-FROM ubuntu:lunar
+FROM ubuntu:mantic
 
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive && \
   apt-get install -qy \
@@ -15,8 +15,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive && \
   && apt-get clean -y \
   && rm -rf /var/lib/apt/lists/*
 
-# RUN useradd -ms /bin/bash ubuntu
-RUN mkdir /build /pico-sdk && chown -R ubuntu:ubuntu /build /pico-sdk
+RUN mkdir /pico-sdk && chown -R ubuntu:ubuntu /pico-sdk
 
 USER ubuntu
 
@@ -27,4 +26,4 @@ RUN git clone https://github.com/raspberrypi/pico-sdk.git /pico-sdk \
 
 ENV PICO_SDK_PATH /pico-sdk
 
-VOLUME [ "/build" ]
+VOLUME [ "/pico-sdk" ]

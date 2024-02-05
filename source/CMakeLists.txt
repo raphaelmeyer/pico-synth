@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.25)
+cmake_minimum_required(VERSION 3.27)
 
 include(cmake/pico-project.cmake)
 
@@ -8,11 +8,10 @@ setup_project()
 
 include(CTest)
 
-add_subdirectory(library)
-add_subdirectory(spec)
+add_subdirectory(shared)
 
-if(BUILD_TARGET_PICO)
-  add_subdirectory(device)
-  add_subdirectory(executable)
-  add_subdirectory(vendor)
+if(DEFINED PICO_BOARD)
+  add_subdirectory(pico)
+else()
+  add_subdirectory(host)
 endif()
