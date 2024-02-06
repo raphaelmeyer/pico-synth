@@ -6,13 +6,26 @@
   ],
   "extensions": {
     "recommendations": [
-      "ms-vscode-remote.remote-containers"
+      "llvm-vs-code-extensions.vscode-clangd",
+      "ms-vscode-remote.remote-containers",
+      "ms-vscode.cmake-tools",
+      "twxs.cmake"
     ]
   },
   "settings": {
     "editor.renderWhitespace": "boundary",
     "editor.tabSize": 2,
     "editor.formatOnSave": true,
+    "clangd.arguments": [
+      "--compile-commands-dir=${workspaceFolder}/_build"
+    ],
+    "cmake.sourceDirectory": "${workspaceFolder}/source",
+    "cmake.useCMakePresets": "always",
+    "cmake.copyCompileCommands": "${workspaceFolder}/_build/compile_commands.json",
+    "[cpp]": {
+      "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
+      "editor.inlayHints.enabled": "off"
+    },
     "[json][jsonc]": {
       "editor.defaultFormatter": "vscode.json-language-features"
     }

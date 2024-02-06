@@ -13,10 +13,10 @@
       }
     },
     {
-      "name": "host",
-      "displayName": "Host Config",
+      "name": "gcc",
+      "displayName": "GCC Config",
       "generator": "Ninja",
-      "binaryDir": "${sourceParentDir}/_build/host",
+      "binaryDir": "${sourceParentDir}/_build/gcc",
       "cacheVariables": {
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
         "CMAKE_BUILD_TYPE": "Debug"
@@ -24,6 +24,20 @@
       "environment": {
         "CC": "gcc",
         "CXX": "g++"
+      }
+    },
+    {
+      "name": "clang",
+      "displayName": "clang Config",
+      "generator": "Ninja",
+      "binaryDir": "${sourceParentDir}/_build/clang",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CMAKE_BUILD_TYPE": "Debug"
+      },
+      "environment": {
+        "CC": "clang",
+        "CXX": "clang++"
       }
     }
   ],
@@ -34,16 +48,26 @@
       "configurePreset": "pico"
     },
     {
-      "name": "host",
-      "displayName": "Host Build",
-      "configurePreset": "host"
+      "name": "gcc",
+      "displayName": "GCC Build",
+      "configurePreset": "gcc"
+    },
+    {
+      "name": "clang",
+      "displayName": "clang Build",
+      "configurePreset": "clang"
     }
   ],
   "testPresets": [
     {
-      "name": "host",
-      "displayName": "Host Test",
-      "configurePreset": "host"
+      "name": "gcc",
+      "displayName": "GCC Test",
+      "configurePreset": "gcc"
+    },
+    {
+      "name": "clang",
+      "displayName": "clang Test",
+      "configurePreset": "clang"
     }
   ]
 }
