@@ -62,12 +62,18 @@
     {
       "name": "gcc",
       "displayName": "GCC Test",
-      "configurePreset": "gcc"
+      "configurePreset": "gcc",
+      "output": {
+        "outputOnFailure": true
+      }
     },
     {
       "name": "clang",
       "displayName": "clang Test",
-      "configurePreset": "clang"
+      "configurePreset": "clang",
+      "output": {
+        "outputOnFailure": true
+      }
     }
   ]
 }
