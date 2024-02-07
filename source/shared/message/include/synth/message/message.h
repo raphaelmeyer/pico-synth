@@ -2,6 +2,7 @@
 
 #include <array>
 #include <cstdint>
+#include <functional>
 #include <variant>
 
 enum class Register : uint8_t { Volume = 0x6 };
@@ -20,9 +21,8 @@ struct Message {
   Command command{};
 };
 
-struct Encoded {
-  std::array<uint8_t, 2> header{};
-};
+using Word = std::array<uint8_t, 2>;
 
-Encoded encode(Message const &message);
-Message decode(Encoded const &message);
+void send(Message const &message, std::function<void(Word)> send_word);
+
+Message receive(std::function<Word()> receive_word);

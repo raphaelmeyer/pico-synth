@@ -15,27 +15,34 @@ template <class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
 
 } // namespace
 
-Encoded encode(Message const &message) {
-  return std::visit(
-      overloaded{[&](Trigger const &) {
-                   return Encoded{.header = {message.address, cmd::trigger}};
+void send(Message const &message, std::function<void(Word)> send_word) {
+  std::visit(overloaded{
+
+                 [&](Trigger const &) {
+                   send_word({message.address, cmd::trigger});
                  },
+
                  [&](Release const &) {
-                   return Encoded{.header = {message.address, cmd::release}};
+                   send_word({message.address, cmd::release});
                  },
+
                  [&](SetRegister const &set) {
-                   return Encoded{
-                       .header = {message.address,
-                                  static_cast<uint8_t>(
-                                      cmd::set_register |
-                                      static_cast<uint8_t>(set.reg))}};
-                 }},
-      message.command);
+                   uint8_t const command = static_cast<uint8_t>(
+                       cmd::set_register | static_cast<uint8_t>(set.reg));
+                   send_word({message.address, command});
+                   send_word({static_cast<uint8_t>(set.value & 0xff),
+                              static_cast<uint8_t>((set.value >> 8) & 0xff)});
+                 }
+
+             },
+             message.command);
 }
 
-Message decode(Encoded const &message) {
+Message receive(std::function<Word()> receive_word) {
+  auto const header = receive_word();
+
   auto const decode_command = [&]() -> Command {
-    auto const command = message.header[1];
+    auto const command = header[1];
 
     if (command == cmd::trigger) {
       return Trigger{};
@@ -46,12 +53,14 @@ Message decode(Encoded const &message) {
     }
 
     if ((command & 0xf0) == cmd::set_register) {
+      auto const data = receive_word();
       return SetRegister{.reg = static_cast<Register>(command & 0xf),
-                         .value = 0x0000};
+                         .value =
+                             static_cast<uint16_t>(data[0] | (data[1] << 8))};
     }
 
     return {};
   };
 
-  return {.address = message.header[0], .command = decode_command()};
+  return {.address = header[0], .command = decode_command()};
 }
