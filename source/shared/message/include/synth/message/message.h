@@ -5,7 +5,15 @@
 #include <functional>
 #include <variant>
 
-enum class Register : uint8_t { Volume = 0x6 };
+enum class Register : uint8_t {
+  Control = 0x0,
+  Frequency = 0x1,
+  Attack = 0x2,
+  Decay = 0x3,
+  Sustain = 0x4,
+  Release = 0x5,
+  Volume = 0x6
+};
 
 struct Trigger {};
 struct Release {};

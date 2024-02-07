@@ -53,3 +53,18 @@ TEST_CASE("send and receive a set volume register message") {
   REQUIRE(command->reg == Register::Volume);
   REQUIRE(command->value == 0xabcd);
 }
+
+TEST_CASE("send and receive a set frequency register message") {
+  Message set_volume{
+      .address = 0xa,
+      .command = SetRegister{.reg = Register::Frequency, .value = 0x7654}};
+
+  auto const decoded = send_and_receive(set_volume);
+
+  auto const command = std::get_if<SetRegister>(&decoded.command);
+
+  REQUIRE(decoded.address == 0xa);
+  REQUIRE(command != nullptr);
+  REQUIRE(command->reg == Register::Frequency);
+  REQUIRE(command->value == 0x7654);
+}
