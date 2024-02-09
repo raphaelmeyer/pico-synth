@@ -5,6 +5,7 @@ target_sources(synth
   PRIVATE
     envelope-generator.cc
     oscillator.cc
+    tick_counter.cc
 )
 
 target_include_directories(synth
