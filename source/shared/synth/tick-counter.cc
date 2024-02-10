@@ -1,4 +1,4 @@
-#include "tick_counter.h"
+#include "tick-counter.h"
 
 TickCounter::TickCounter(uint32_t sampling_rate)
     : sampling_rate_{sampling_rate} {}

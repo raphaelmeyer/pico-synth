@@ -1,11 +1,8 @@
 #pragma once
 
-#include <cstdint>
+#include "tick.h"
 
-struct Tick {
-  int current{};
-  int ticks_per_period{};
-};
+#include <cstdint>
 
 class TickCounter {
 public:

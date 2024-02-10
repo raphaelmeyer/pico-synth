@@ -1,8 +1,11 @@
 #pragma once
 
 #include "source.h"
-#include "tick_counter.h"
+#include "tick-counter.h"
 #include "wave-form.h"
+#include "wave-generation.h"
+
+#include <variant>
 
 class Oscillator : public Source {
 public:
@@ -15,4 +18,5 @@ public:
 
 private:
   TickCounter counter_;
+  std::variant<None, Sawtooth> wave_generation_{};
 };
