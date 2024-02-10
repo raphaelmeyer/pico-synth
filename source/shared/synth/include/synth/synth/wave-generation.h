@@ -20,6 +20,11 @@ public:
   uint16_t value(Tick tick);
 };
 
+class Square {
+public:
+  uint16_t value(Tick tick);
+};
+
 class Triangle {
 public:
   uint16_t value(Tick tick);

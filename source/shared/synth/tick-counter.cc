@@ -16,7 +16,7 @@ Tick TickCounter::next() {
   }
 
   correction_accumulator_ += missing_ticks_per_second_;
-  if (correction_accumulator_ >= sampling_rate_) {
+  if (correction_accumulator_ >= static_cast<int>(sampling_rate_)) {
     correction_accumulator_ -= sampling_rate_;
     stretch_next_period_ = true;
   }

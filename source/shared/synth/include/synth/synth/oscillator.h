@@ -18,5 +18,5 @@ public:
 
 private:
   TickCounter counter_;
-  std::variant<None, Sawtooth> wave_generation_{};
+  std::variant<None, Sawtooth, Square, Triangle> wave_generation_{};
 };

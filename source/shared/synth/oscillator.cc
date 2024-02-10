@@ -15,11 +15,19 @@ uint16_t Oscillator::next_value() {
 void Oscillator::set_type(WaveForm form) {
   switch (form) {
   case WaveForm::Sawtooth:
-    wave_generation_ = Sawtooth{};
+    wave_generation_.emplace<Sawtooth>();
+    break;
+
+  case WaveForm::Square:
+    wave_generation_.emplace<Square>();
+    break;
+
+  case WaveForm::Triangle:
+    wave_generation_.emplace<Triangle>();
     break;
 
   default:
-    wave_generation_ = None{};
+    wave_generation_.emplace<None>();
     break;
   }
 }
