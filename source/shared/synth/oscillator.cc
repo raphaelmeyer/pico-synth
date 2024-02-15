@@ -1,9 +1,10 @@
 #include "oscillator.h"
+
 #include "wave-form.h"
 #include "wave-generation.h"
-#include <cstdint>
 
-Oscillator::Oscillator(uint32_t sampling_rate) : counter_{sampling_rate} {}
+Oscillator::Oscillator(uint32_t sampling_rate, Random &random)
+    : random_{random}, counter_{sampling_rate} {}
 
 uint16_t Oscillator::next_value() {
   const auto tick = counter_.next();
@@ -14,6 +15,10 @@ uint16_t Oscillator::next_value() {
 
 void Oscillator::set_type(WaveForm form) {
   switch (form) {
+  case WaveForm::Noise:
+    wave_generation_.emplace<Noise>(random_);
+    break;
+
   case WaveForm::Sawtooth:
     wave_generation_.emplace<Sawtooth>();
     break;

@@ -7,9 +7,11 @@
 
 #include <variant>
 
+class Random;
+
 class Oscillator : public Source {
 public:
-  Oscillator(uint32_t sampling_rate);
+  Oscillator(uint32_t sampling_rate, Random &random);
 
   uint16_t next_value() override;
 
@@ -17,6 +19,8 @@ public:
   void set_frequency(uint16_t frequency);
 
 private:
+  Random &random_;
+
   TickCounter counter_;
-  std::variant<None, Sawtooth, Square, Triangle> wave_generation_{};
+  std::variant<None, Noise, Sawtooth, Square, Triangle> wave_generation_{};
 };

@@ -9,7 +9,11 @@ target_sources(synth
     wave-generation.cc
 )
 
-target_link_libraries(synth PRIVATE settings)
+target_link_libraries(synth
+  PRIVATE
+    settings
+    synth::types
+)
 
 target_include_directories(synth
   INTERFACE
