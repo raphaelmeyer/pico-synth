@@ -1,22 +1,32 @@
 #include <doctest/doctest.h>
 
 #include <synth/message/message.h>
+#include <synth/message/transceiver.h>
 
 #include <deque>
 #include <variant>
 
 namespace {
 
-Message send_and_receive(Message const &message) {
-  std::deque<Word> channel{};
+class Channel : public Transceiver {
 
-  send(message, [&](auto const &data) { channel.push_back(data); });
+public:
+  void send(Word data) override { channel_.push_back(data); }
 
-  return receive([&]() {
-    auto const result = channel.front();
-    channel.pop_front();
+  Word receive() override {
+    auto const result = channel_.front();
+    channel_.pop_front();
     return result;
-  });
+  }
+
+private:
+  std::deque<Word> channel_{};
+};
+
+Message send_and_receive(Message const &message) {
+  Channel channel{};
+  send(message, channel);
+  return receive(channel);
 }
 
 } // namespace

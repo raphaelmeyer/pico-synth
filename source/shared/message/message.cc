@@ -15,31 +15,32 @@ template <class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
 
 } // namespace
 
-void send(Message const &message, std::function<void(Word)> send_word) {
+void send(Message const &message, Transceiver &transceiver) {
   std::visit(overloaded{
 
                  [&](Trigger const &) {
-                   send_word({message.address, cmd::trigger});
+                   transceiver.send({message.address, cmd::trigger});
                  },
 
                  [&](Release const &) {
-                   send_word({message.address, cmd::release});
+                   transceiver.send({message.address, cmd::release});
                  },
 
                  [&](SetRegister const &set) {
                    uint8_t const command = static_cast<uint8_t>(
                        cmd::set_register | static_cast<uint8_t>(set.reg));
-                   send_word({message.address, command});
-                   send_word({static_cast<uint8_t>(set.value & 0xff),
-                              static_cast<uint8_t>((set.value >> 8) & 0xff)});
+                   transceiver.send({message.address, command});
+                   transceiver.send(
+                       {static_cast<uint8_t>(set.value & 0xff),
+                        static_cast<uint8_t>((set.value >> 8) & 0xff)});
                  }
 
              },
              message.command);
 }
 
-Message receive(std::function<Word()> receive_word) {
-  auto const header = receive_word();
+Message receive(Transceiver &transceiver) {
+  auto const header = transceiver.receive();
 
   auto const decode_command = [&]() -> Command {
     auto const command = header[1];
@@ -53,7 +54,7 @@ Message receive(std::function<Word()> receive_word) {
     }
 
     if ((command & 0xf0) == cmd::set_register) {
-      auto const data = receive_word();
+      auto const data = transceiver.receive();
       return SetRegister{.reg = static_cast<Register>(command & 0xf),
                          .value =
                              static_cast<uint16_t>(data[0] | (data[1] << 8))};

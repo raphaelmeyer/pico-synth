@@ -39,13 +39,13 @@ void MidiControl::play(uint8_t channel, uint8_t note) {
   Message set_frequency{
       .address = channel,
       .command = SetRegister{.reg = Register::Frequency, .value = frequency}};
-  send(set_frequency, [this](Word data) { transceiver_.send(data); });
+  send(set_frequency, transceiver_);
 
   Message trigger{.address = channel, .command = Trigger{}};
-  send(trigger, [this](Word data) { transceiver_.send(data); });
+  send(trigger, transceiver_);
 }
 
 void MidiControl::release(uint8_t channel) {
   Message release{.address = channel, .command = Release{}};
-  send(release, [this](Word data) { transceiver_.send(data); });
+  send(release, transceiver_);
 }

@@ -29,6 +29,6 @@ struct Message {
   Command command{};
 };
 
-void send(Message const &message, std::function<void(Word)> send_word);
+void send(Message const &message, Transceiver &transceiver);
 
-Message receive(std::function<Word()> receive_word);
+Message receive(Transceiver &transceiver);
