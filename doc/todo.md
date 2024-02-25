@@ -1,13 +1,13 @@
 # TODO
 
+- midi: `powf` -> `<cmath>` vs `<pico/float.h>`
+
 - Refactor project setup
 
   - Move content from README to doc, except for short hint how to get started
   - Clean up taskfile
   - Cross compiling
   - Using find_package? For easier split of host/target executables
-
-- Change frequency value to "f \* 4" for 2 bit fraction
 
 - Reset function for synth (e.g. when spi is out of sync)
 

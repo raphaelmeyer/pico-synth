@@ -1,7 +1,7 @@
 #pragma once
 
-#include <array>
-#include <cstdint>
+#include "transceiver.h"
+
 #include <functional>
 #include <variant>
 
@@ -28,8 +28,6 @@ struct Message {
   uint8_t address{};
   Command command{};
 };
-
-using Word = std::array<uint8_t, 2>;
 
 void send(Message const &message, std::function<void(Word)> send_word);
 

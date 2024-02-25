@@ -8,3 +8,5 @@ target_include_directories(message
   PRIVATE
     include/synth/message
 )
+
+target_link_libraries(message PRIVATE settings)
