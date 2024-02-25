@@ -17,7 +17,8 @@
     "editor.tabSize": 2,
     "editor.formatOnSave": true,
     "clangd.arguments": [
-      "--compile-commands-dir=${workspaceFolder}/_build"
+      "--compile-commands-dir=${workspaceFolder}/_build",
+      "--query-driver=/usr/bin/arm-none-eabi-*,/usr/bin/clang*"
     ],
     "cmake.sourceDirectory": "${workspaceFolder}/source",
     "cmake.useCMakePresets": "always",

@@ -5,11 +5,12 @@
   },
   "customizations": {
     "vscode": {
-      "settings": {
-        "clangd.arguments": [
-          "--query-driver=/usr/bin/arm-none-eabi-g++"
-        ]
-      }
+      "extensions": [
+        "llvm-vs-code-extensions.vscode-clangd",
+        "ms-vscode-remote.remote-containers",
+        "ms-vscode.cmake-tools",
+        "twxs.cmake"
+      ]
     }
   },
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
