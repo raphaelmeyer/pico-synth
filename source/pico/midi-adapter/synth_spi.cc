@@ -17,5 +17,3 @@ void SynthSpi::init() {
 void SynthSpi::send(Word data) {
   spi_write_blocking(config_.spi, data.data(), data.size());
 }
-
-Word SynthSpi::receive() { return {}; }

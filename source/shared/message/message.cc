@@ -15,32 +15,31 @@ template <class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
 
 } // namespace
 
-void send(Message const &message, Transceiver &transceiver) {
+void send(Message const &message, Sender &sender) {
   std::visit(overloaded{
 
                  [&](Trigger const &) {
-                   transceiver.send({message.address, cmd::trigger});
+                   sender.send({message.address, cmd::trigger});
                  },
 
                  [&](Release const &) {
-                   transceiver.send({message.address, cmd::release});
+                   sender.send({message.address, cmd::release});
                  },
 
                  [&](SetRegister const &set) {
                    uint8_t const command = static_cast<uint8_t>(
                        cmd::set_register | static_cast<uint8_t>(set.reg));
-                   transceiver.send({message.address, command});
-                   transceiver.send(
-                       {static_cast<uint8_t>(set.value & 0xff),
-                        static_cast<uint8_t>((set.value >> 8) & 0xff)});
+                   sender.send({message.address, command});
+                   sender.send({static_cast<uint8_t>(set.value & 0xff),
+                                static_cast<uint8_t>((set.value >> 8) & 0xff)});
                  }
 
              },
              message.command);
 }
 
-Message receive(Transceiver &transceiver) {
-  auto const header = transceiver.receive();
+Message receive(Receiver &receiver) {
+  auto const header = receiver.receive();
 
   auto const decode_command = [&]() -> Command {
     auto const command = header[1];
@@ -54,7 +53,7 @@ Message receive(Transceiver &transceiver) {
     }
 
     if ((command & 0xf0) == cmd::set_register) {
-      auto const data = transceiver.receive();
+      auto const data = receiver.receive();
       return SetRegister{.reg = static_cast<Register>(command & 0xf),
                          .value =
                              static_cast<uint16_t>(data[0] | (data[1] << 8))};

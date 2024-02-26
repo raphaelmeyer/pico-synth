@@ -1,6 +1,5 @@
 #include "synth_spi.h"
 
-#include <synth/message/transceiver.h>
 #include <synth/midi/midi_control.h>
 
 #include <bsp/board.h>
@@ -75,8 +74,10 @@ void task() {
 } // namespace
 
 int main() {
-  bi_decl(bi_4pins_with_func(12, 13, 14, 15, GPIO_FUNC_SPI));
-  bi_decl(bi_1pin_with_name(22, "LED"));
+  bi_decl(bi_4pins_with_func(
+      config.synth_spi.miso, config.synth_spi.chip_select,
+      config.synth_spi.clock, config.synth_spi.mosi, GPIO_FUNC_SPI));
+  bi_decl(bi_1pin_with_name(config.power_led, "LED"));
 
   gpio_init(config.power_led);
   gpio_set_dir(config.power_led, GPIO_OUT);

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "transceiver.h"
+#include "receiver.h"
+#include "sender.h"
 
 #include <functional>
 #include <variant>
@@ -29,6 +30,6 @@ struct Message {
   Command command{};
 };
 
-void send(Message const &message, Transceiver &transceiver);
+void send(Message const &message, Sender &sender);
 
-Message receive(Transceiver &transceiver);
+Message receive(Receiver &receiver);

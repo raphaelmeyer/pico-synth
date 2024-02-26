@@ -11,8 +11,7 @@ constexpr const uint8_t note_on = 0x90;
 
 } // namespace midi
 
-MidiControl::MidiControl(Transceiver &transceiver)
-    : transceiver_{transceiver} {}
+MidiControl::MidiControl(Sender &sender) : sender_{sender} {}
 
 void MidiControl::handle(MidiPacket const &packet) {
   auto const message = packet[1] & 0xF0;
@@ -39,13 +38,13 @@ void MidiControl::play(uint8_t channel, uint8_t note) {
   Message set_frequency{
       .address = channel,
       .command = SetRegister{.reg = Register::Frequency, .value = frequency}};
-  send(set_frequency, transceiver_);
+  send(set_frequency, sender_);
 
   Message trigger{.address = channel, .command = Trigger{}};
-  send(trigger, transceiver_);
+  send(trigger, sender_);
 }
 
 void MidiControl::release(uint8_t channel) {
   Message release{.address = channel, .command = Release{}};
-  send(release, transceiver_);
+  send(release, sender_);
 }

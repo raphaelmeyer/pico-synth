@@ -1,14 +1,15 @@
 #include <doctest/doctest.h>
 
 #include <synth/message/message.h>
-#include <synth/message/transceiver.h>
+#include <synth/message/receiver.h>
+#include <synth/message/sender.h>
 
 #include <deque>
 #include <variant>
 
 namespace {
 
-class Channel : public Transceiver {
+class Channel : public Sender, public Receiver {
 
 public:
   void send(Word data) override { channel_.push_back(data); }
