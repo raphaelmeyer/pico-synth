@@ -2,7 +2,7 @@
 
 #include "tick.h"
 
-#include "synth/device/random.h"
+#include <synth/device/random.h>
 
 uint16_t None::value(Tick) { return 0; }
 
