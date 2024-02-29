@@ -10,10 +10,6 @@
         "PICO_BOARD": "pico",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
         "CMAKE_BUILD_TYPE": "Release"
-      },
-      "environment": {
-        "CC": "arm-none-eabi-gcc",
-        "CXX": "arm-none-eabi-g++"
       }
     },
     {
