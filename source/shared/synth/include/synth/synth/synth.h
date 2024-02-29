@@ -19,8 +19,6 @@ public:
   Sample next_sample();
 
 private:
-  void set_value(std::size_t channel, SetRegister const &set);
-
   struct Voice {
     Voice(uint32_t sampling_rate, Random &random)
         : oscillator{sampling_rate, random},
@@ -29,6 +27,8 @@ private:
     Oscillator oscillator;
     EnvelopeGenerator envelope_generator;
   };
+
+  void set_value(Voice &voice, SetRegister const &set);
 
   std::array<Voice, NumOscillators> voices_;
 };

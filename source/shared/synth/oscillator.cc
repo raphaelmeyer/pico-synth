@@ -1,7 +1,8 @@
 #include "oscillator.h"
 
-#include "wave-form.h"
 #include "wave-generation.h"
+
+#include <synth/wave-form.h>
 
 Oscillator::Oscillator(uint32_t sampling_rate, Random &random)
     : random_{random}, counter_{sampling_rate} {}

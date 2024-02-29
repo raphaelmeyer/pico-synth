@@ -1,8 +1,6 @@
 #include <doctest/doctest.h>
 
 #include <synth/message/message.h>
-#include <synth/message/receiver.h>
-#include <synth/message/sender.h>
 
 #include <deque>
 #include <variant>
@@ -26,8 +24,8 @@ private:
 
 Message send_and_receive(Message const &message) {
   Channel channel{};
-  send(message, channel);
-  return receive(channel);
+  send_message(message, channel);
+  return receive_message(channel);
 }
 
 } // namespace
@@ -78,4 +76,15 @@ TEST_CASE("send and receive a set frequency register message") {
   REQUIRE(command != nullptr);
   REQUIRE(command->reg == Register::Frequency);
   REQUIRE(command->value == 0x7654);
+}
+
+TEST_CASE("send and receive a set wave form register message") {
+  Message set_wave{.address = 0x7, .command = SetWaveForm{WaveForm::Triangle}};
+
+  auto const decoded = send_and_receive(set_wave);
+
+  auto const command = std::get_if<SetWaveForm>(&decoded.command);
+  REQUIRE(decoded.address == 0x7);
+  REQUIRE(command != nullptr);
+  REQUIRE(command->wave == WaveForm::Triangle);
 }

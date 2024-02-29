@@ -2,8 +2,9 @@
 
 #include "source.h"
 #include "tick-counter.h"
-#include "wave-form.h"
 #include "wave-generation.h"
+
+#include <synth/wave-form.h>
 
 #include <variant>
 

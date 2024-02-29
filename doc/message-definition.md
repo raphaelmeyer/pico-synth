@@ -21,15 +21,16 @@ Remarks:
 
 ## Oscillator Registers
 
-    0x0   Control
+    0x0   Reserved
     0x1   Frequency
     0x2   Attack
     0x3   Decay
     0x4   Sustain
     0x5   Release
     0x6   Volume
+    0x7   Wave Form
 
-### Control Register
+## Wave Form
 
     Reserved:12 | Wave:4
 

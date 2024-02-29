@@ -4,6 +4,7 @@
 #include <synth/device/i2s.config.h>
 #include <synth/device/i2s.h>
 #include <synth/device/pico-random.h>
+#include <synth/message/message.h>
 #include <synth/synth/synth.h>
 
 #include <pico/binary_info.h>
@@ -47,7 +48,7 @@ void task() {
   adapter_spi.init();
 
   for (;;) {
-    auto const message = receive(adapter_spi);
+    auto const message = receive_message(adapter_spi);
     queue_add_blocking(&messages, &message);
   }
 }

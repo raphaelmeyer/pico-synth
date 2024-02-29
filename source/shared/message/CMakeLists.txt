@@ -9,4 +9,9 @@ target_include_directories(message
     include/synth/message
 )
 
-target_link_libraries(message PRIVATE settings)
+target_link_libraries(message
+  PUBLIC
+    synth::types
+  PRIVATE
+    settings
+)

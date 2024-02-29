@@ -17,18 +17,20 @@ void Synth::handle(Message const &message) {
     return;
   }
 
+  auto &voice = voices_.at(channel);
+
   std::visit(
       overloaded{
 
-          [this, channel](Trigger const &) {
-            voices_.at(channel).envelope_generator.trigger();
-          },
+          [&voice](Trigger const &) { voice.envelope_generator.trigger(); },
 
-          [this, channel](Release const &) {
-            voices_.at(channel).envelope_generator.release();
-          },
+          [&voice](Release const &) { voice.envelope_generator.release(); },
 
-          [this, channel](SetRegister const &set) { set_value(channel, set); }
+          [this, &voice](SetRegister const &set) { set_value(voice, set); },
+
+          [&voice](SetWaveForm const &set) {
+            voice.oscillator.set_type(set.wave);
+          }
 
       },
       message.command);
@@ -43,11 +45,9 @@ Sample Synth::next_sample() {
   return {clipped, clipped};
 }
 
-void Synth::set_value(std::size_t channel, SetRegister const &set) {
-  auto &voice = voices_.at(channel);
-
+void Synth::set_value(Voice &voice, SetRegister const &set) {
   switch (set.reg) {
-  case Register::Control:
+  default:
     break;
 
   case Register::Frequency:
