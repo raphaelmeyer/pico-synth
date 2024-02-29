@@ -8,7 +8,11 @@ target_link_libraries(pico-synth PRIVATE
   pico_stdlib
   pico_multicore
   hardware_spi
+  device::i2s
+  device::random
   synth::message
+  synth::synth
+  synth::types
   settings
 )
 
