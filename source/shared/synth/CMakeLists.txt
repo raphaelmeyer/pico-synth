@@ -5,6 +5,7 @@ target_sources(synth
   PRIVATE
     envelope-generator.cc
     oscillator.cc
+    synth.cc
     tick-counter.cc
     wave-generation.cc
 )
@@ -12,6 +13,7 @@ target_sources(synth
 target_link_libraries(synth
   PRIVATE
     settings
+    synth::message
     synth::types
 )
 
