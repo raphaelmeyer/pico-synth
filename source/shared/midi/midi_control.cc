@@ -35,9 +35,8 @@ void MidiControl::play(uint8_t channel, uint8_t note) {
   auto const frequency =
       static_cast<uint16_t>(powf(2, (note - 69) / 12.0) * 440);
 
-  Message set_frequency{
-      .address = channel,
-      .command = SetRegister{.reg = Register::Frequency, .value = frequency}};
+  Message set_frequency{.address = channel,
+                        .command = SetFrequency{.frequency = frequency}};
   send_message(set_frequency, sender_);
 
   Message trigger{.address = channel, .command = Trigger{}};

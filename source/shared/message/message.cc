@@ -1,18 +1,29 @@
 #include "message.h"
+#include <variant>
 
 namespace {
 
 namespace cmd {
-constexpr const uint8_t trigger = 0x01;
-constexpr const uint8_t release = 0x02;
-constexpr const uint8_t set_register = 0x10;
+constexpr uint8_t const trigger = 0x01;
+constexpr uint8_t const release = 0x02;
+constexpr uint8_t const set_register = 0x10;
 } // namespace cmd
 
+namespace reg {
+constexpr uint8_t const freqeuncy = 0x1;
+constexpr uint8_t const attack = 0x2;
+constexpr uint8_t const decay = 0x3;
+constexpr uint8_t const sustain = 0x4;
+constexpr uint8_t const release = 0x5;
+constexpr uint8_t const volume = 0x6;
+constexpr uint8_t const wave = 0x7;
+} // namespace reg
+
 namespace wave {
-constexpr const uint8_t noise = 0x0;
-constexpr const uint8_t square = 0x1;
-constexpr const uint8_t triangle = 0x2;
-constexpr const uint8_t sawtooth = 0x3;
+constexpr uint8_t const noise = 0x0;
+constexpr uint8_t const square = 0x1;
+constexpr uint8_t const triangle = 0x2;
+constexpr uint8_t const sawtooth = 0x3;
 } // namespace wave
 
 template <class... Ts> struct overloaded : Ts... {
@@ -54,33 +65,66 @@ WaveForm decode_wave_form(uint8_t wave) {
   }
 }
 
+Word encode_data(uint16_t data) {
+  return {static_cast<uint8_t>(data & 0xff),
+          static_cast<uint8_t>((data >> 8) & 0xff)};
+}
+
+uint16_t decode_data(Word data) {
+  return static_cast<uint16_t>(data[0] | (data[1] << 8));
+}
+
 } // namespace
 
 void send_message(Message const &message, Sender &sender) {
+  auto const address = message.address;
+
   std::visit(overloaded{
 
-                 [&](Trigger const &) {
-                   sender.send({message.address, cmd::trigger});
+                 [address, &sender](Trigger) {
+                   sender.send({address, cmd::trigger});
                  },
 
-                 [&](Release const &) {
-                   sender.send({message.address, cmd::release});
+                 [address, &sender](Release) {
+                   sender.send({address, cmd::release});
                  },
 
-                 [&](SetRegister const &set) {
-                   uint8_t const command = static_cast<uint8_t>(
-                       cmd::set_register | static_cast<uint8_t>(set.reg));
-                   sender.send({message.address, command});
-                   sender.send({static_cast<uint8_t>(set.value & 0xff),
-                                static_cast<uint8_t>((set.value >> 8) & 0xff)});
+                 [address, &sender](SetFrequency set) {
+                   sender.send({address, cmd::set_register | reg::freqeuncy});
+                   sender.send(encode_data(set.frequency));
                  },
 
-                 [&](SetWaveForm const &set) {
-                   sender.send({message.address,
-                                cmd::set_register |
-                                    static_cast<uint8_t>(Register::WaveForm)});
+                 [address, &sender](SetVolume set) {
+                   sender.send({address, cmd::set_register | reg::volume});
+                   sender.send(encode_data(set.volume));
+                 },
+
+                 [address, &sender](SetAttack set) {
+                   sender.send({address, cmd::set_register | reg::attack});
+                   sender.send(encode_data(set.attack));
+                 },
+
+                 [address, &sender](SetDecay set) {
+                   sender.send({address, cmd::set_register | reg::decay});
+                   sender.send(encode_data(set.decay));
+                 },
+
+                 [address, &sender](SetSustain set) {
+                   sender.send({address, cmd::set_register | reg::sustain});
+                   sender.send(encode_data(set.sustain));
+                 },
+
+                 [address, &sender](SetRelease set) {
+                   sender.send({address, cmd::set_register | reg::release});
+                   sender.send(encode_data(set.release));
+                 },
+
+                 [address, &sender](SetWaveForm set) {
+                   sender.send({address, cmd::set_register | reg::wave});
                    sender.send({encode_wave_form(set.wave), 0});
-                 }
+                 },
+
+                 [](auto) {}
 
              },
              message.command);
@@ -103,13 +147,31 @@ Message receive_message(Receiver &receiver) {
     if ((command & 0xf0) == cmd::set_register) {
       auto const data = receiver.receive();
 
-      if ((command & 0xf) == static_cast<int>(Register::WaveForm)) {
-        return SetWaveForm{decode_wave_form(data[0] & 0xf)};
-      }
+      switch (command & 0xf) {
+      case reg::freqeuncy:
+        return SetFrequency{decode_data(data)};
 
-      return SetRegister{.reg = static_cast<Register>(command & 0xf),
-                         .value =
-                             static_cast<uint16_t>(data[0] | (data[1] << 8))};
+      case reg::volume:
+        return SetVolume{decode_data(data)};
+
+      case reg::attack:
+        return SetAttack{decode_data(data)};
+
+      case reg::decay:
+        return SetDecay{decode_data(data)};
+
+      case reg::sustain:
+        return SetSustain{decode_data(data)};
+
+      case reg::release:
+        return SetRelease{decode_data(data)};
+
+      case reg::wave:
+        return SetWaveForm{decode_wave_form(data[0] & 0xf)};
+
+      default:
+        return {};
+      }
     }
 
     return {};

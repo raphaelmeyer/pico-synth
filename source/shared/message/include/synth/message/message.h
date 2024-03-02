@@ -8,28 +8,41 @@
 #include <functional>
 #include <variant>
 
-enum class Register : uint8_t {
-  Reserved = 0x0,
-  Frequency = 0x1,
-  Attack = 0x2,
-  Decay = 0x3,
-  Sustain = 0x4,
-  Release = 0x5,
-  Volume = 0x6,
-  WaveForm = 0x7
+struct Trigger {};
+
+struct Release {};
+
+struct SetFrequency {
+  uint16_t frequency;
 };
 
-struct Trigger {};
-struct Release {};
-struct SetRegister {
-  Register reg{};
-  uint16_t value{};
+struct SetVolume {
+  uint16_t volume;
 };
+
+struct SetAttack {
+  uint16_t attack;
+};
+
+struct SetDecay {
+  uint16_t decay;
+};
+
+struct SetSustain {
+  uint16_t sustain;
+};
+
+struct SetRelease {
+  uint16_t release;
+};
+
 struct SetWaveForm {
   WaveForm wave{};
 };
 
-using Command = std::variant<Trigger, Release, SetRegister, SetWaveForm>;
+using Command =
+    std::variant<std::monostate, Trigger, Release, SetFrequency, SetVolume,
+                 SetAttack, SetDecay, SetSustain, SetRelease, SetWaveForm>;
 
 struct Message {
   uint8_t address{};

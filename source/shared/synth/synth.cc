@@ -1,6 +1,7 @@
 #include "synth.h"
 
 #include <synth/message/message.h>
+#include <variant>
 
 template <class... Ts> struct overloaded : Ts... {
   using Ts::operator()...;
@@ -26,11 +27,35 @@ void Synth::handle(Message const &message) {
 
           [&voice](Release const &) { voice.envelope_generator.release(); },
 
-          [this, &voice](SetRegister const &set) { set_value(voice, set); },
+          [&voice](SetFrequency const &set) {
+            voice.oscillator.set_frequency(set.frequency);
+          },
+
+          [&voice](SetVolume const &set) {
+            voice.envelope_generator.set_volume(set.volume);
+          },
+
+          [&voice](SetAttack const &set) {
+            voice.envelope_generator.set_attack(set.attack);
+          },
+
+          [&voice](SetDecay const &set) {
+            voice.envelope_generator.set_decay(set.decay);
+          },
+
+          [&voice](SetSustain const &set) {
+            voice.envelope_generator.set_sustain(set.sustain);
+          },
+
+          [&voice](SetRelease const &set) {
+            voice.envelope_generator.set_release(set.release);
+          },
 
           [&voice](SetWaveForm const &set) {
             voice.oscillator.set_type(set.wave);
-          }
+          },
+
+          [](std::monostate) {}
 
       },
       message.command);
@@ -43,35 +68,4 @@ Sample Synth::next_sample() {
   }
   uint16_t const clipped = std::max(sample, static_cast<uint32_t>(65535));
   return {clipped, clipped};
-}
-
-void Synth::set_value(Voice &voice, SetRegister const &set) {
-  switch (set.reg) {
-  default:
-    break;
-
-  case Register::Frequency:
-    voice.oscillator.set_frequency(set.value);
-    break;
-
-  case Register::Attack:
-    voice.envelope_generator.set_attack(set.value);
-    break;
-
-  case Register::Decay:
-    voice.envelope_generator.set_decay(set.value);
-    break;
-
-  case Register::Sustain:
-    voice.envelope_generator.set_sustain(set.value);
-    break;
-
-  case Register::Release:
-    voice.envelope_generator.set_release(set.value);
-    break;
-
-  case Register::Volume:
-    voice.envelope_generator.set_volume(set.value);
-    break;
-  }
 }

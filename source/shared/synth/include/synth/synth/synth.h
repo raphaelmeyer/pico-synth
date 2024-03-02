@@ -28,7 +28,5 @@ private:
     EnvelopeGenerator envelope_generator;
   };
 
-  void set_value(Voice &voice, SetRegister const &set);
-
   std::array<Voice, NumOscillators> voices_;
 };
