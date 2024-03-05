@@ -3,6 +3,7 @@ target_sources(specs
   PRIVATE
     main.cc
     message/message.spec.cc
+    midi/midi.spec.cc
 )
 
 target_link_libraries(specs
@@ -10,6 +11,7 @@ target_link_libraries(specs
     settings
     doctest::doctest
     synth::message
+    synth::midi
 )
 
 add_test(NAME "Specs" COMMAND specs)

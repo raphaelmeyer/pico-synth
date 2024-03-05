@@ -33,7 +33,7 @@ void MidiControl::handle(MidiPacket const &packet) {
 
 void MidiControl::play(uint8_t channel, uint8_t note) {
   auto const frequency =
-      static_cast<uint16_t>(powf(2, (note - 69) / 12.0) * 440);
+      static_cast<uint16_t>(powf(2, (note - 69) / 12.0) * 440 * 4);
 
   Message set_frequency{.address = channel,
                         .command = SetFrequency{.frequency = frequency}};
