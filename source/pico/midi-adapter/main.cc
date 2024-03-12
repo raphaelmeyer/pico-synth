@@ -1,6 +1,6 @@
 #include "synth_spi.h"
 
-#include <synth/midi/midi_control.h>
+#include <synth/control/midi_control.h>
 
 #include <bsp/board.h>
 #include <tusb.h>
