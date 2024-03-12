@@ -94,8 +94,18 @@ TEST_CASE("Oscillator frequency is a 16bit value with two fractional bits") {
         std::get_if<SetFrequency>(&messages.at(0).command);
     REQUIRE(set_frequency != nullptr);
     REQUIRE(set_frequency->frequency == note.frequency);
-    REQUIRE(std::holds_alternative<Trigger>(messages.at(1).command));
   }
+}
+
+TEST_CASE("Stop playing a note") {
+  MessageSpy spy{};
+  MidiControl midi{spy};
+
+  midi.handle({0, 0x80, 0, 0});
+  auto const messages = spy.decode();
+
+  REQUIRE(messages.size() == 1);
+  REQUIRE(std::holds_alternative<Release>(messages.at(0).command));
 }
 
 } // namespace
