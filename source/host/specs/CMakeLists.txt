@@ -2,6 +2,7 @@ add_executable(specs)
 target_sources(specs
   PRIVATE
     main.cc
+    control/focus.spec.cc
     control/midi.spec.cc
     message/message.spec.cc
 )

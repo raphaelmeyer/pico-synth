@@ -4,6 +4,7 @@ add_library(synth::control ALIAS control)
 target_sources(control
   PRIVATE
     control.cc
+    focus.cc
     midi_control.cc
 )
 

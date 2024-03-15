@@ -1,4 +1,3 @@
-#include "synth/message/receiver.h"
 #include <doctest/doctest.h>
 
 #include <synth/control/midi_control.h>
