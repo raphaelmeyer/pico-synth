@@ -36,11 +36,13 @@ MidiControl midi{synth_spi};
 
 queue_t midi_messages{};
 
+using UsbMidiPacket = std::array<uint8_t, 4>;
+
 namespace core_0 {
 
 void midi_task() {
   while (tud_midi_available()) {
-    std::array<uint8_t, 4> packet{};
+    UsbMidiPacket packet{};
     tud_midi_packet_read(packet.data());
     queue_add_blocking(&midi_messages, packet.data());
   }
@@ -61,7 +63,7 @@ void task() {
   synth_spi.init();
 
   for (;;) {
-    std::array<uint8_t, 4> packet{};
+    UsbMidiPacket packet{};
 
     while (queue_try_remove(&midi_messages, &packet)) {
       midi.handle(packet);
