@@ -2,7 +2,7 @@
 
 - Refactor project setup
 
-  - Remove control register, add distinct wave form register
+  - Experiment with devcontainerless setup
   - Migrate and clean up implementation
   - Delete old implementation
   - Clean up (or remove) taskfile
