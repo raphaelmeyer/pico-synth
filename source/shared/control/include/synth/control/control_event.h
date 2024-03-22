@@ -2,17 +2,17 @@
 
 #include <variant>
 
-struct Select {
+struct Focused {
   // channel, item
 };
-struct Edit {
+struct Edited {
   // channel, item
 };
-struct Confirm {
+struct Confirmed {
   // channel, item (, value )
 };
-struct Change {
+struct Changed {
   // channel, item, diff
 };
 
-using ControlEvent = std::variant<Select, Edit, Confirm, Change>;
+using ControlEvent = std::variant<Focused, Edited, Confirmed, Changed>;

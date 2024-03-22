@@ -17,12 +17,12 @@ void Control::handle(InputEvent event) {
                    if (focus_.edited()) {
                      focus_.confirm();
                      for (auto notify : listeners_) {
-                       notify(Confirm{});
+                       notify(Confirmed{});
                      }
                    } else {
                      focus_.edit();
                      for (auto notify : listeners_) {
-                       notify(Edit{});
+                       notify(Edited{});
                      }
                    }
                  },
@@ -31,12 +31,12 @@ void Control::handle(InputEvent event) {
                    if (focus_.edited()) {
                      change_value(rotate.diff);
                      for (auto notify : listeners_) {
-                       notify(Change{});
+                       notify(Changed{});
                      }
                    } else {
                      change_selection(rotate.diff);
                      for (auto notify : listeners_) {
-                       notify(Select{});
+                       notify(Focused{});
                      }
                    }
                  }
