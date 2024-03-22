@@ -1,18 +1,5 @@
 #pragma once
 
-#include <variant>
+#include <synth/definitions.h>
 
-struct Focused {
-  // channel, item
-};
-struct Edited {
-  // channel, item
-};
-struct Confirmed {
-  // channel, item (, value )
-};
-struct Changed {
-  // channel, item, diff
-};
-
-using ControlEvent = std::variant<Focused, Edited, Confirmed, Changed>;
+enum class ControlEvent { Focus, Edit, Confirm, Change };

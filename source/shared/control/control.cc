@@ -1,5 +1,6 @@
 #include "control.h"
 
+#include "control_event.h"
 #include "focus.h"
 #include "model.h"
 
@@ -17,12 +18,12 @@ void Control::handle(InputEvent event) {
                    if (focus_.edited()) {
                      focus_.confirm();
                      for (auto notify : listeners_) {
-                       notify(Confirmed{});
+                       notify(ControlEvent::Confirm);
                      }
                    } else {
                      focus_.edit();
                      for (auto notify : listeners_) {
-                       notify(Edited{});
+                       notify(ControlEvent::Edit);
                      }
                    }
                  },
@@ -31,12 +32,12 @@ void Control::handle(InputEvent event) {
                    if (focus_.edited()) {
                      change_value(rotate.diff);
                      for (auto notify : listeners_) {
-                       notify(Changed{});
+                       notify(ControlEvent::Change);
                      }
                    } else {
                      change_selection(rotate.diff);
                      for (auto notify : listeners_) {
-                       notify(Focused{});
+                       notify(ControlEvent::Focus);
                      }
                    }
                  }
@@ -51,8 +52,20 @@ void Control::onEvent(std::function<void(ControlEvent)> listener) {
 
 void Control::change_value(int diff) {
   auto const focused = focus_.focused();
-  if (focused.property == Property::Volume) {
-    model_.channels.at(focused.oscillator).volume += diff;
+  auto &channel = model_.channels.at(focused.oscillator);
+  switch (focused.property) {
+  case Property::Volume:
+    channel.volume += diff;
+  case Property::Attack:
+    channel.attack += diff;
+  case Property::Decay:
+    channel.decay += diff;
+  case Property::Sustain:
+    channel.sustain += diff;
+  case Property::Release:
+    channel.release += diff;
+  case Property::WaveForm:
+    break;
   }
 }
 
