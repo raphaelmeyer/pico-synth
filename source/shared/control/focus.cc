@@ -19,6 +19,7 @@ void Focus::edit() { edited_ = true; }
 void Focus::confirm() { edited_ = false; }
 
 void Focus::scroll(int steps) {
+  edited_ = false;
   auto updated =
       (static_cast<int>(focused_) + steps) % static_cast<int>(order_.size());
   if (updated < 0) {

@@ -59,4 +59,36 @@ TEST_CASE("should cycle focus when scrolling") {
   REQUIRE(focus.focused().property == Property::Release);
 }
 
+TEST_CASE("should not be editing by default") {
+  Focus focus{};
+
+  REQUIRE(not focus.edited());
+}
+
+TEST_CASE("should allow to edit focused parameter") {
+  Focus focus{};
+  focus.scroll(7);
+
+  focus.edit();
+  REQUIRE(focus.edited());
+}
+
+TEST_CASE("Should stop editing parameter after confirm") {
+  Focus focus{};
+  focus.scroll(7);
+
+  focus.edit();
+  focus.confirm();
+  REQUIRE(not focus.edited());
+}
+
+TEST_CASE("should abort editing when scroll away") {
+  Focus focus{};
+  focus.scroll(7);
+  focus.edit();
+
+  focus.scroll(1);
+  REQUIRE(not focus.edited());
+}
+
 } // namespace
