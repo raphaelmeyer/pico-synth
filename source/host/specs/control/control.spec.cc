@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <doctest/doctest.h>
 
 #include <synth/control/control.h>
@@ -8,7 +9,7 @@
 
 namespace {
 
-TEST_CASE("control") {
+TEST_CASE("focus") {
   Model model{};
   Focus focus{};
 
@@ -16,15 +17,151 @@ TEST_CASE("control") {
     Control control{model, focus};
 
     control.handle(Rotate{13});
-
     REQUIRE(focus.focused().oscillator == 2);
     REQUIRE(focus.focused().property == Property::Volume);
 
     control.handle(Rotate{-3});
-
     REQUIRE(focus.focused().oscillator == 1);
     REQUIRE(focus.focused().property == Property::Sustain);
   }
+
+  SUBCASE("should edit focused parameter on click event") {
+    Control control{model, focus};
+    control.handle(Rotate{2});
+    REQUIRE(focus.focused().oscillator == 0);
+    REQUIRE(focus.focused().property == Property::Attack);
+
+    control.handle(Click{});
+
+    REQUIRE(focus.edited());
+  }
+
+  SUBCASE("should change edited parameter on rotate event") {
+    Control control{model, focus};
+    control.handle(Rotate{7});
+    REQUIRE(focus.focused().oscillator == 1);
+    REQUIRE(focus.focused().property == Property::Volume);
+    control.handle(Click{});
+    REQUIRE(focus.edited());
+
+    auto const previous = model.channels.at(1).volume;
+    control.handle(Rotate{-2});
+
+    REQUIRE(model.channels.at(1).volume != previous);
+  }
+
+  SUBCASE("should confirm edited parameter on click event") {
+    Control control{model, focus};
+
+    control.handle(Rotate{10});
+    REQUIRE(focus.focused().oscillator == 1);
+    REQUIRE(focus.focused().property == Property::Sustain);
+    control.handle(Click{});
+    control.handle(Rotate{1});
+
+    control.handle(Click{});
+
+    REQUIRE(not focus.edited());
+  }
+}
+
+TEST_CASE("control") {
+  Model model{};
+  Focus focus{};
+
+  SUBCASE("should change volume on rotate event") {
+    Control control{model, focus};
+    model.channels.at(1).volume = 1000;
+
+    control.handle(Rotate{7});
+    REQUIRE(focus.focused().oscillator == 1);
+    REQUIRE(focus.focused().property == Property::Volume);
+    control.handle(Click{});
+    REQUIRE(focus.edited());
+
+    control.handle(Rotate{-2});
+
+    REQUIRE(model.channels.at(1).volume == 998);
+  }
+
+  SUBCASE("should not change other parameters") {
+    Control control{model, focus};
+    model.channels.at(0).volume = 1000;
+    model.channels.at(1).volume = 1111;
+    model.channels.at(2).volume = 2000;
+
+    model.channels.at(1).attack = 3000;
+    model.channels.at(1).release = 4000;
+
+    model.channels.at(1).wave = WaveForm::Sawtooth;
+
+    control.handle(Rotate{7});
+    REQUIRE(focus.focused().oscillator == 1);
+    REQUIRE(focus.focused().property == Property::Volume);
+    control.handle(Click{});
+    REQUIRE(focus.edited());
+
+    control.handle(Rotate{-2});
+    REQUIRE(model.channels.at(1).volume == 1109);
+
+    REQUIRE(model.channels.at(0).volume == 1000);
+    REQUIRE(model.channels.at(2).volume == 2000);
+
+    REQUIRE(model.channels.at(1).attack == 3000);
+    REQUIRE(model.channels.at(1).release == 4000);
+
+    REQUIRE(model.channels.at(1).wave == WaveForm::Sawtooth);
+  }
+
+  SUBCASE("should change volume on rotate event") {
+    Control control{model, focus};
+
+    control.handle(Rotate{9});
+    REQUIRE(focus.focused().oscillator == 1);
+    REQUIRE(focus.focused().property == Property::Decay);
+    control.handle(Click{});
+    REQUIRE(focus.edited());
+
+    std::vector<int> steps{-2, -1, 0, 1, 2};
+    for (auto step : steps) {
+      model.channels.at(1).decay = 30000;
+      control.handle(Rotate{step});
+
+      REQUIRE(model.channels.at(1).decay == 30000 + step);
+    }
+  }
+
+  SUBCASE("shold change parameter value exponentially on fast rotation") {
+    Control control{model, focus};
+
+    control.handle(Rotate{9});
+    REQUIRE(focus.focused().oscillator == 1);
+    REQUIRE(focus.focused().property == Property::Decay);
+    control.handle(Click{});
+    REQUIRE(focus.edited());
+
+    struct Data {
+      int steps;
+      uint16_t value;
+    };
+
+    std::vector<Data> data{{3, 30000 + 64},
+                           {4, 30000 + 256},
+                           {6, 30000 + 4096},
+                           {7, 30000 + 16384}};
+
+    for (auto item : data) {
+      model.channels.at(1).decay = 30000;
+      control.handle(Rotate{item.steps});
+
+      REQUIRE(model.channels.at(1).decay == item.value);
+    }
+  }
+}
+
+TEST_CASE("notification") {
+  Model model{};
+  Focus focus{};
 
   SUBCASE("should notify when parameter is focused") {
     std::vector<ControlEvent> spy;
@@ -35,9 +172,7 @@ TEST_CASE("control") {
     control.handle(Rotate{-3});
 
     REQUIRE(spy.size() == 1);
-    REQUIRE(spy.at(0) == ControlEvent::Focus);
-    REQUIRE(focus.focused().oscillator == 3);
-    REQUIRE(focus.focused().property == Property::Decay);
+    REQUIRE(spy.back() == ControlEvent::Focus);
   }
 
   SUBCASE("should notify when parameter is edited") {
@@ -50,10 +185,7 @@ TEST_CASE("control") {
     control.handle(Click{});
 
     REQUIRE(spy.size() == 2);
-    REQUIRE(spy.at(1) == ControlEvent::Edit);
-    REQUIRE(focus.focused().oscillator == 0);
-    REQUIRE(focus.focused().property == Property::Attack);
-    REQUIRE(focus.edited());
+    REQUIRE(spy.back() == ControlEvent::Edit);
   }
 
   SUBCASE("should notify when parameter is changed") {
@@ -68,11 +200,7 @@ TEST_CASE("control") {
     control.handle(Rotate{-2});
 
     REQUIRE(spy.size() == 3);
-    REQUIRE(spy.at(2) == ControlEvent::Change);
-    REQUIRE(focus.focused().oscillator == 1);
-    REQUIRE(focus.focused().property == Property::Volume);
-    REQUIRE(focus.edited());
-    REQUIRE(model.channels.at(1).volume == 121);
+    REQUIRE(spy.back() == ControlEvent::Change);
   }
 
   SUBCASE("should notify when parameter is confirmed") {
@@ -88,11 +216,7 @@ TEST_CASE("control") {
     control.handle(Click{});
 
     REQUIRE(spy.size() == 4);
-    REQUIRE(spy.at(3) == ControlEvent::Confirm);
-    REQUIRE(focus.focused().oscillator == 1);
-    REQUIRE(focus.focused().property == Property::Sustain);
-    REQUIRE(model.channels.at(1).sustain == 1001);
-    REQUIRE(not focus.edited());
+    REQUIRE(spy.back() == ControlEvent::Confirm);
   }
 }
 

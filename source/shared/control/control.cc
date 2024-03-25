@@ -4,6 +4,18 @@
 #include "focus.h"
 #include "model.h"
 
+namespace {
+
+void change_parameter_value(int steps, uint16_t &parameter) {
+  if (steps > 2) {
+    parameter += 1 << (steps * 2);
+  } else {
+    parameter += steps;
+  }
+}
+
+} // namespace
+
 template <class... Ts> struct overloaded : Ts... {
   using Ts::operator()...;
 };
@@ -55,15 +67,25 @@ void Control::change_value(int diff) {
   auto &channel = model_.channels.at(focused.oscillator);
   switch (focused.property) {
   case Property::Volume:
-    channel.volume += diff;
+    change_parameter_value(diff, channel.volume);
+    break;
+
   case Property::Attack:
-    channel.attack += diff;
+    change_parameter_value(diff, channel.attack);
+    break;
+
   case Property::Decay:
-    channel.decay += diff;
+    change_parameter_value(diff, channel.decay);
+    break;
+
   case Property::Sustain:
-    channel.sustain += diff;
+    change_parameter_value(diff, channel.sustain);
+    break;
+
   case Property::Release:
-    channel.release += diff;
+    change_parameter_value(diff, channel.release);
+    break;
+
   case Property::WaveForm:
     break;
   }
