@@ -6,14 +6,11 @@
 
 namespace {
 
-void change_parameter_value(int steps, uint16_t &parameter) {
-  if (steps > 2) {
-    parameter += 1 << (steps * 2);
-  } else if (steps < -2) {
-    parameter -= 1 << (-steps * 2);
-  } else {
-    parameter += steps;
-  }
+uint16_t change_parameter_value(int steps, uint16_t parameter) {
+  auto const log_steps = (steps > 2)
+                             ? 1 << (steps * 2)
+                             : ((steps < -2) ? -(1 << (-steps * 2)) : steps);
+  return std::min(std::max(0, parameter + log_steps), 65535);
 }
 
 } // namespace
@@ -69,23 +66,23 @@ void Control::change_value(int diff) {
   auto &channel = model_.channels.at(focused.oscillator);
   switch (focused.property) {
   case Property::Volume:
-    change_parameter_value(diff, channel.volume);
+    channel.volume = change_parameter_value(diff, channel.volume);
     break;
 
   case Property::Attack:
-    change_parameter_value(diff, channel.attack);
+    channel.attack = change_parameter_value(diff, channel.attack);
     break;
 
   case Property::Decay:
-    change_parameter_value(diff, channel.decay);
+    channel.decay = change_parameter_value(diff, channel.decay);
     break;
 
   case Property::Sustain:
-    change_parameter_value(diff, channel.sustain);
+    channel.sustain = change_parameter_value(diff, channel.sustain);
     break;
 
   case Property::Release:
-    change_parameter_value(diff, channel.release);
+    channel.release = change_parameter_value(diff, channel.release);
     break;
 
   case Property::WaveForm:

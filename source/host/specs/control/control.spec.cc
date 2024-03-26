@@ -44,10 +44,10 @@ TEST_CASE("focus") {
     control.handle(Click{});
     REQUIRE(focus.edited());
 
-    auto const previous = model.channels.at(1).volume;
+    model.channels.at(1).volume = 12345;
     control.handle(Rotate{-2});
 
-    REQUIRE(model.channels.at(1).volume != previous);
+    REQUIRE(model.channels.at(1).volume != 12345);
   }
 
   SUBCASE("should confirm edited parameter on click event") {
@@ -156,6 +156,42 @@ TEST_CASE("control") {
 
       REQUIRE(model.channels.at(1).decay == item.value);
     }
+  }
+
+  SUBCASE("should not overflow parameter value") {
+    Control control{model, focus};
+
+    control.handle(Rotate{9});
+    REQUIRE(focus.focused().oscillator == 1);
+    REQUIRE(focus.focused().property == Property::Decay);
+    control.handle(Click{});
+    REQUIRE(focus.edited());
+
+    model.channels.at(1).decay = 65535;
+    control.handle(Rotate{1});
+    REQUIRE(model.channels.at(1).decay == 65535);
+
+    model.channels.at(1).decay = 30000;
+    control.handle(Rotate{9});
+    REQUIRE(model.channels.at(1).decay == 65535);
+  }
+
+  SUBCASE("should not underflow parameter value") {
+    Control control{model, focus};
+
+    control.handle(Rotate{9});
+    REQUIRE(focus.focused().oscillator == 1);
+    REQUIRE(focus.focused().property == Property::Decay);
+    control.handle(Click{});
+    REQUIRE(focus.edited());
+
+    model.channels.at(1).decay = 1;
+    control.handle(Rotate{-2});
+    REQUIRE(model.channels.at(1).decay == 0);
+
+    model.channels.at(1).decay = 30000;
+    control.handle(Rotate{-8});
+    REQUIRE(model.channels.at(1).decay == 0);
   }
 }
 
