@@ -2,8 +2,8 @@
 
 ## Migration
 
-- control tests (and implementation)
-  - change wave form
+- input device(s)
+- add (and wire) control in midi adapter
 
 ## Overview
 

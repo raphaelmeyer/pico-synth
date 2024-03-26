@@ -13,6 +13,28 @@ uint16_t change_parameter_value(int steps, uint16_t parameter) {
   return std::min(std::max(0, parameter + log_steps), 65535);
 }
 
+WaveForm change_wave_form(int steps, WaveForm wave) {
+  constexpr int const NumberOfWaveForms = 4;
+
+  auto const index = (steps + static_cast<int>(wave)) % NumberOfWaveForms;
+  switch (index) {
+  default:
+    return WaveForm::Noise;
+
+  case 1:
+  case -3:
+    return WaveForm::Square;
+
+  case 2:
+  case -2:
+    return WaveForm::Triangle;
+
+  case 3:
+  case -1:
+    return WaveForm::Sawtooth;
+  }
+}
+
 } // namespace
 
 template <class... Ts> struct overloaded : Ts... {
@@ -86,6 +108,7 @@ void Control::change_value(int diff) {
     break;
 
   case Property::WaveForm:
+    channel.wave = change_wave_form(diff, channel.wave);
     break;
   }
 }

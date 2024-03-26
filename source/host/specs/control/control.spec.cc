@@ -193,6 +193,33 @@ TEST_CASE("control") {
     control.handle(Rotate{-8});
     REQUIRE(model.channels.at(1).decay == 0);
   }
+
+  SUBCASE("should change wave on rotate event") {
+    Control control{model, focus};
+
+    control.handle(Rotate{18});
+    REQUIRE(focus.focused().oscillator == 3);
+    REQUIRE(focus.focused().property == Property::WaveForm);
+    control.handle(Click{});
+    REQUIRE(focus.edited());
+
+    REQUIRE(model.channels.at(3).wave == WaveForm::Noise);
+
+    control.handle(Rotate{1});
+    REQUIRE(model.channels.at(3).wave == WaveForm::Square);
+
+    control.handle(Rotate{2});
+    REQUIRE(model.channels.at(3).wave == WaveForm::Sawtooth);
+
+    control.handle(Rotate{3});
+    REQUIRE(model.channels.at(3).wave == WaveForm::Triangle);
+
+    control.handle(Rotate{-1});
+    REQUIRE(model.channels.at(3).wave == WaveForm::Square);
+
+    control.handle(Rotate{-6});
+    REQUIRE(model.channels.at(3).wave == WaveForm::Sawtooth);
+  }
 }
 
 TEST_CASE("notification") {
