@@ -9,6 +9,8 @@ namespace {
 void change_parameter_value(int steps, uint16_t &parameter) {
   if (steps > 2) {
     parameter += 1 << (steps * 2);
+  } else if (steps < -2) {
+    parameter -= 1 << (-steps * 2);
   } else {
     parameter += steps;
   }

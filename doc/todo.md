@@ -3,7 +3,6 @@
 ## Migration
 
 - control tests (and implementation)
-  - exponential negative value change
   - limit change value to range (do not overflow)
   - change wave form
 
