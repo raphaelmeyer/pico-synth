@@ -9,7 +9,6 @@
 
 - Refactor project setup
 
-  - Experiment with devcontainerless setup
   - Migrate and clean up implementation
   - Delete old implementation
   - Clean up (or remove) taskfile
