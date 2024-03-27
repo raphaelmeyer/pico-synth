@@ -2,20 +2,30 @@
 
 ## Getting started
 
-- start vscode
-- install recommended plugin
-- click on `><` and select `Reopen in Container`
-- configure and build
+To set up the toolchain install:
+- cmake
+- clang toolchain
+- arm-none-eabi toolchain
+- go-task (taskfile)
 
-Plug in a Raspberry Pi Pico (BOOTSEL) and copy the uf2 from the container to
-the RPi in a shell on the host. Paths and container name may differ.
+Build the binaries:
 
-    docker cp <container>:/build/executable/.../<...>.uf2 /run/media/.../RPI-RP2/
+    go-task build
+
+Plug in a Raspberry Pi Pico (BOOTSEL) and copy the uf2 from the build folder to
+the RPi in a shell on the host. Paths may differ.
+
+    cp _build/pico/pico/<executable>/<executable>.uf2 /run/media/.../RPI-RP2/
+
+List the available build tasks:
+
+    go-task --list
+
 
 ## Pico Synth
 
 The executable of the _pico-synth_ is generated in
-`/build/executable/pico-synth/pico-synth.uf2`.
+`_build/pico/pico/pico-synth/pico-synth.uf2`.
 
 ### Hardware
 
@@ -43,7 +53,7 @@ The executable of the _pico-synth_ is generated in
 ## Midi Adapter
 
 The executable of the _midi-adapter_ is generated in
-`/build/executable/midi-adapter/midi-adapter.uf2`.
+`_build/pico/pico/midi-adapter/midi-adapter.uf2`.
 
 ### Hardware
 
@@ -69,15 +79,3 @@ The executable of the _midi-adapter_ is generated in
 
     36 (3V3 OUT)  ---- VIN
     38 (GND)      ---- GND
-
-## Target tests
-
-Available target tests:
-    - `/build/library/specs/library-specs.uf`
-
-Conncet to the USB serial device, e.g. with `python-pyserial`:
-
-    python -m serial.tools.miniterm /dev/ttyACM0
-
-A device flashed with tests can accepts requests from `picotool` by using flag
-`-f`.
