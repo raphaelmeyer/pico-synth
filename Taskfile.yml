@@ -1,22 +1,23 @@
 version: '3'
 
-vars:
-  CONTAINER:
-    sh: docker ps -f status=running --format {{ "\"{{.Image}} {{.Names}}\"" }} | grep vsc-pico-synth | cut -f 2 -d " "
+env:
+  PICO_SDK_PATH: '{{ joinPath .ROOT_DIR "_build/ext/pico-sdk" }}'
 
 tasks:
   build:
     desc: Build all artifacts
     cmds:
-      - task: build-target
       - task: build-host
+      - task: build-pico
 
   dev:
     desc: Verify specs on host in watch mode
     watch: true
     sources:
-      - 'source/**/*.cc'
-      - 'source/**/*.h'
+      - 'source/host/**/*.cc'
+      - 'source/host/**/*.h'
+      - 'source/shared/**/*.cc'
+      - 'source/shared/**/*.h'
     cmds:
       - clear
       - task: specs-host
@@ -25,37 +26,52 @@ tasks:
     desc: Verify specs on host
     deps:
       - build-host
+    dir: source
     cmds:
-      - docker exec -it --env CTEST_OUTPUT_ON_FAILURE=1 "{{.CONTAINER}}" cmake --build /build/host --target test
-
-  specs-target:
-    desc: Download specs to target
-    deps:
-      - build-target
-    cmds:
-      - docker cp "{{.CONTAINER}}:/build/pico/library/specs/library-specs.uf2" /run/media/$USER/RPI-RP2/
-    preconditions:
-      - sh: picotool info
-        msg: "Requires Pico in BOOTSEL mode"
+      - ctest --preset "host-clang"
 
   build-host:
     internal: true
+    cmds:
+      - cmake --build --preset "host-clang" --target all
+    dir: source
     deps:
-      - use-container
-    cmds: 
-      - docker exec -it "{{.CONTAINER}}" cmake --build /build/host --target all
+      - configure-host
 
-  build-target:
+  build-pico:
     internal: true
+    cmds:
+      - cmake --build --preset "pico" --target all
+    dir: source
     deps:
-      - use-container
-    cmds: 
-      - docker exec -it "{{.CONTAINER}}" cmake --build /build/pico --target all
+      - configure-pico
 
-  use-container:
+  configure-host:
     internal: true
-    preconditions:
-      - sh: test ! -z "{{.CONTAINER}}"
-        msg: "Container 'vsc-pico-synth' is not running."
-    requires:
-      vars: [CONTAINER]
+    cmds:
+      - cmake --preset "host-clang"
+    dir: source
+    status:
+      - test -d {{ joinPath .ROOT_DIR "_build/host-clang" }}
+      - test -f {{ joinPath .ROOT_DIR "_build/host-clang/CMakeCache.txt" }}
+
+  configure-pico:
+    internal: true
+    cmds:
+      - cmake --preset "pico"
+    dir: source
+    deps:
+      - pico-sdk
+    status:
+      - test -d {{ joinPath .ROOT_DIR "_build/pico" }}
+      - test -f {{ joinPath .ROOT_DIR "_build/pico/CMakeCache.txt" }}
+
+  pico-sdk:
+    desc: Download and install the Pico SDK
+    cmds:
+      - git clone https://github.com/raspberrypi/pico-sdk.git _build/ext/pico-sdk
+      - cd _build/ext/pico-sdk && git switch -c raphaelmeyer/1.5.1 1.5.1
+      - cd _build/ext/pico-sdk && git submodule update --init
+    status:
+      - test -d _build/ext/pico-sdk
+      - test -f _build/ext/pico-sdk/CMakeLists.txt

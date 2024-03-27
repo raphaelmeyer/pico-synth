@@ -8,29 +8,19 @@
       "binaryDir": "${sourceParentDir}/_build/pico",
       "cacheVariables": {
         "PICO_BOARD": "pico",
+        "PICO_PLATFORM": "rp2040",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
         "CMAKE_BUILD_TYPE": "Release"
-      }
-    },
-    {
-      "name": "gcc",
-      "displayName": "GCC Config",
-      "generator": "Ninja",
-      "binaryDir": "${sourceParentDir}/_build/gcc",
-      "cacheVariables": {
-        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-        "CMAKE_BUILD_TYPE": "Debug"
       },
       "environment": {
-        "CC": "gcc",
-        "CXX": "g++"
+        "PICO_SDK_PATH": "${sourceParentDir}/_build/ext/pico-sdk"
       }
     },
     {
-      "name": "clang",
-      "displayName": "clang Config",
+      "name": "host-clang",
+      "displayName": "Host Config (clang)",
       "generator": "Ninja",
-      "binaryDir": "${sourceParentDir}/_build/clang",
+      "binaryDir": "${sourceParentDir}/_build/host-clang",
       "cacheVariables": {
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
         "CMAKE_BUILD_TYPE": "Debug"
@@ -48,29 +38,16 @@
       "configurePreset": "pico"
     },
     {
-      "name": "gcc",
-      "displayName": "GCC Build",
-      "configurePreset": "gcc"
-    },
-    {
-      "name": "clang",
-      "displayName": "clang Build",
-      "configurePreset": "clang"
+      "name": "host-clang",
+      "displayName": "Host Build (clang)",
+      "configurePreset": "host-clang"
     }
   ],
   "testPresets": [
     {
-      "name": "gcc",
-      "displayName": "GCC Test",
-      "configurePreset": "gcc",
-      "output": {
-        "outputOnFailure": true
-      }
-    },
-    {
-      "name": "clang",
-      "displayName": "clang Test",
-      "configurePreset": "clang",
+      "name": "host-clang",
+      "displayName": "Host Tests (clang)",
+      "configurePreset": "host-clang",
       "output": {
         "outputOnFailure": true
       }
