@@ -1,11 +1,11 @@
-#include <cstdint>
 #include <doctest/doctest.h>
 
 #include <synth/control/control.h>
 #include <synth/control/control_event.h>
 #include <synth/control/focus.h>
-#include <synth/control/input_event.h>
 #include <synth/control/model.h>
+
+#include <synth/input_event.h>
 
 namespace {
 

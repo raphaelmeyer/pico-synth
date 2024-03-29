@@ -1,6 +1,5 @@
 #include "control.h"
 
-#include "control_event.h"
 #include "focus.h"
 #include "model.h"
 

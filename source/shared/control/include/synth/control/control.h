@@ -1,7 +1,8 @@
 #pragma once
 
 #include "control_event.h"
-#include "input_event.h"
+
+#include <synth/input_event.h>
 
 #include <functional>
 
