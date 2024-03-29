@@ -16,8 +16,10 @@ tasks:
     sources:
       - 'source/host/**/*.cc'
       - 'source/host/**/*.h'
+      - 'source/host/**/CMakeLists.txt'
       - 'source/shared/**/*.cc'
       - 'source/shared/**/*.h'
+      - 'source/shared/**/CMakeLists.txt'
     cmds:
       - clear
       - task: specs-host

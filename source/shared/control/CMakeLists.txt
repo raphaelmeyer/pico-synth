@@ -6,6 +6,7 @@ target_sources(control
     control.cc
     focus.cc
     midi_control.cc
+    synth_control.cc
 )
 
 target_include_directories(control

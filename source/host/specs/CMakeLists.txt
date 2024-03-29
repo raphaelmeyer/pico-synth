@@ -5,6 +5,7 @@ target_sources(specs
     control/control.spec.cc
     control/focus.spec.cc
     control/midi.spec.cc
+    control/synth.spec.cc
     message/message.spec.cc
 )
 

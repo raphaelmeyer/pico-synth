@@ -4,6 +4,7 @@
 #include <synth/control/focus.h>
 #include <synth/control/midi_control.h>
 #include <synth/control/model.h>
+#include <synth/control/synth_control.h>
 
 #include <synth/io/gpio_irq.h>
 #include <synth/io/push_button.h>
@@ -57,6 +58,7 @@ PushButton confirm{config.confirm, [] { control.handle(Click{}); }};
 
 SynthSpi synth_spi{config.synth_spi};
 MidiControl midi{synth_spi};
+SynthControl synth{model, focus, synth_spi};
 
 queue_t midi_messages{};
 
@@ -88,6 +90,8 @@ void task() {
   select.init(gpio);
   confirm.init(gpio);
   synth_spi.init();
+
+  control.onEvent([](ControlEvent event) { synth.handle(event); });
 
   for (;;) {
     UsbMidiPacket packet{};
