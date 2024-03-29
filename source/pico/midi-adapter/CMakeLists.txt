@@ -11,6 +11,7 @@ target_link_libraries(midi-adapter PRIVATE
   hardware_spi
   tinyusb_device
   tinyusb_board
+  device::io
   synth::control
   synth::message
   settings

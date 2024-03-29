@@ -1,6 +1,13 @@
 #include "synth_spi.h"
 
+#include <synth/control/control.h>
+#include <synth/control/focus.h>
 #include <synth/control/midi_control.h>
+#include <synth/control/model.h>
+
+#include <synth/io/gpio_irq.h>
+#include <synth/io/push_button.h>
+#include <synth/io/rotary_encoder.h>
 
 #include <bsp/board.h>
 #include <tusb.h>
@@ -18,6 +25,10 @@ namespace {
 
 struct Config {
   SynthSpiConfig synth_spi;
+
+  RotaryEncoderConfig select;
+  PushButtonConfig confirm;
+
   uint power_led;
 };
 
@@ -26,12 +37,25 @@ Config const config{
     .synth_spi =
         {.mosi = 15, .miso = 12, .clock = 14, .chip_select = 13, .spi = spi1},
 
+    .select = {.gpio_a = 0, .gpio_b = 1},
+    .confirm = {.gpio = 2},
+
     .power_led = 22
 
 };
 
-SynthSpi synth_spi{config.synth_spi};
+GpioIrq gpio{};
 
+Model model{};
+Focus focus{};
+Control control{model, focus};
+
+RotaryEncoder select{config.select,
+                     [](int steps) { control.handle(Rotate{steps}); }};
+
+PushButton confirm{config.confirm, [] { control.handle(Click{}); }};
+
+SynthSpi synth_spi{config.synth_spi};
 MidiControl midi{synth_spi};
 
 queue_t midi_messages{};
@@ -60,6 +84,9 @@ void task() {
 namespace core_1 {
 
 void task() {
+  gpio.init();
+  select.init(gpio);
+  confirm.init(gpio);
   synth_spi.init();
 
   for (;;) {
@@ -68,6 +95,9 @@ void task() {
     while (queue_try_remove(&midi_messages, &packet)) {
       midi.handle(packet);
     }
+
+    gpio.task();
+    select.task();
   }
 }
 
@@ -79,6 +109,8 @@ int main() {
   bi_decl(bi_4pins_with_func(
       config.synth_spi.miso, config.synth_spi.chip_select,
       config.synth_spi.clock, config.synth_spi.mosi, GPIO_FUNC_SPI));
+  bi_decl(bi_3pins_with_names(config.select.gpio_a, "A", config.select.gpio_b,
+                              "B", config.confirm.gpio, "S"));
   bi_decl(bi_1pin_with_name(config.power_led, "LED"));
 
   gpio_init(config.power_led);
