@@ -13,7 +13,7 @@ uint16_t EnvelopeGenerator::next_value() {
 
   if (state_ == State::Attack) {
     if (ticks_ > attack_) {
-      ticks_ = 0;
+      ticks_ = 1;
       state_ = State::Decay;
     } else {
       level = (65535 * ticks_) / attack_;
@@ -22,7 +22,7 @@ uint16_t EnvelopeGenerator::next_value() {
 
   if (state_ == State::Decay) {
     if (ticks_ > decay_) {
-      ticks_ = 0;
+      ticks_ = 1;
       state_ = State::Sustain;
     } else {
       level = 65535 - ((65535 - sustain_) * ticks_) / decay_;
@@ -35,7 +35,7 @@ uint16_t EnvelopeGenerator::next_value() {
 
   if (state_ == State::Release) {
     if (ticks_ > release_) {
-      ticks_ = 0;
+      ticks_ = 1;
       state_ = State::Idle;
     } else {
       level = sustain_ - (sustain_ * ticks_) / release_;
@@ -50,7 +50,7 @@ uint16_t EnvelopeGenerator::next_value() {
 
 void EnvelopeGenerator::trigger() {
   state_ = State::Attack;
-  ticks_ = 0;
+  ticks_ = 1;
 }
 
 void EnvelopeGenerator::release() {
@@ -59,7 +59,7 @@ void EnvelopeGenerator::release() {
   case State::Decay:
   case State::Sustain:
     state_ = State::Release;
-    ticks_ = 0;
+    ticks_ = 1;
 
   case State::Idle:
   case State::Release:

@@ -11,8 +11,8 @@ target_sources(specs
 
 target_link_libraries(specs
   PRIVATE
-    settings
     doctest::doctest
+    settings
     synth::control
     synth::message
 )

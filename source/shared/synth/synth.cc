@@ -66,6 +66,6 @@ Sample Synth::next_sample() {
   for (auto &voice : voices_) {
     sample += voice.envelope_generator.next_value();
   }
-  uint16_t const clipped = std::max(sample, static_cast<uint32_t>(65535));
+  uint16_t const clipped = std::min(sample, static_cast<uint32_t>(65535));
   return {clipped, clipped};
 }
