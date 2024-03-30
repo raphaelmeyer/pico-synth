@@ -58,12 +58,15 @@ void task() {
 namespace core_1 {
 
 void task() {
+  i2s.init();
+
+  Message message{};
   for (;;) {
     auto const sample = synth.next_sample();
-    i2s.output_sample(sample.left, sample.right);
-    Message message{};
-    if (queue_try_remove(&messages, &message)) {
-      synth.handle(message);
+    while (not i2s.output_sample(sample.left, sample.right)) {
+      if (queue_try_remove(&messages, &message)) {
+        synth.handle(message);
+      }
     }
   }
 }

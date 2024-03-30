@@ -35,7 +35,12 @@ void I2S::init() {
   pio_sm_set_enabled(config_.pio, sm_, true);
 }
 
-void I2S::output_sample(uint16_t left, uint16_t right) {
+bool I2S::output_sample(uint16_t left, uint16_t right) {
+  if (pio_sm_is_tx_fifo_full(config_.pio, sm_)) {
+    return false;
+  }
+
   uint32_t const value = (left << 16) | right;
   pio_sm_put_blocking(config_.pio, sm_, value);
+  return true;
 }
