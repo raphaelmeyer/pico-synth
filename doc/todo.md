@@ -13,6 +13,7 @@
   - Delete old implementation
   - Clean up (or remove) taskfile
   - Move content from README to doc, except for short hint how to get started
+  - Rename host/simulator folder (and restructure/rename files inside)
 
 - midi: `powf` -> `<cmath>` vs `<pico/float.h>`
 
