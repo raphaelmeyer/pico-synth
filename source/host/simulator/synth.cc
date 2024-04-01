@@ -1,4 +1,3 @@
-#include "synth/message/message.h"
 #include <synth/device/random.h>
 #include <synth/synth/synth.h>
 

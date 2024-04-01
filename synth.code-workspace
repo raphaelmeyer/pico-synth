@@ -18,7 +18,8 @@
     "editor.formatOnSave": true,
     "clangd.arguments": [
       "--compile-commands-dir=${workspaceFolder}/_build",
-      "--query-driver=/usr/bin/arm-none-eabi-*,/usr/bin/clang*"
+      "--query-driver=/usr/bin/arm-none-eabi-*,/usr/bin/clang*",
+      "--header-insertion=never"
     ],
     "cmake.sourceDirectory": "${workspaceFolder}/source",
     "cmake.useCMakePresets": "always",

@@ -1,5 +1,3 @@
-#include "synth/message/message.h"
-#include "synth/wave-form.h"
 #include <ApprovalTests/Approvals.h>
 #include <doctest/doctest.h>
 
@@ -38,13 +36,27 @@ TEST_CASE("Triggering a note produces sound") {
       Message{.address = 0, .command = SetFrequency{.frequency = 1760}});
   synth.handle(Message{.address = 0,
                        .command = SetWaveForm{.wave = WaveForm::Sawtooth}});
+  synth.handle(Message{.address = 0, .command = SetAttack{20}}); // 960 samples
+  synth.handle(Message{.address = 0, .command = SetDecay{15}});  // 720 samples
+  synth.handle(Message{.address = 0,
+                       .command = SetSustain{55555}}); // 100 ms -> 4800 samples
+  synth.handle(
+      Message{.address = 0, .command = SetRelease{25}}); // 1200 samples
 
-  synth.handle(Message{.address = 0, .command = SetSustain{55555}});
+  std::vector<Sample> samples{7700, Sample{}};
+
+  std::ranges::generate_n(samples.begin(), 10,
+                          [&synth] { return synth.next_sample(); });
 
   synth.handle(Message{.address = 0, .command = Trigger{}});
 
-  std::vector<Sample> samples{10000, Sample{}};
-  std::ranges::generate(samples, [&synth] { return synth.next_sample(); });
+  std::ranges::generate_n(samples.begin() + 10, 6480,
+                          [&synth] { return synth.next_sample(); });
+
+  synth.handle(Message{.address = 0, .command = Release{}});
+
+  std::ranges::generate(samples.begin() + 10 + 6480, samples.end(),
+                        [&synth] { return synth.next_sample(); });
 
   ApprovalTests::Approvals::verifyAll(samples);
 }
