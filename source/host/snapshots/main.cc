@@ -3,3 +3,6 @@
 
 auto directoryDisposer =
     ApprovalTests::Approvals::useApprovalsSubdirectory("snapshots");
+
+auto defaultReporterDisposer = ApprovalTests::Approvals::useAsDefaultReporter(
+    std::make_shared<ApprovalTests::QuietReporter>());
