@@ -2,6 +2,7 @@ add_executable(snapshots)
 target_sources(snapshots
   PRIVATE
     main.cc
+    synth/oscillator.spec.cc
     synth/synth.spec.cc
 )
 
