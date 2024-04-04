@@ -8,10 +8,10 @@ sys.dont_write_bytecode = True
 
 # Assumes that the snapshot file is in the following format:
 #
-# [0] = 0 0
-# [1] = 7 7
-# [2] = 23 23
-# [3] = 42 42
+# [0] = 0 0 ...
+# [1] = 7 7 ...
+# [2] = 23 23 ...
+# [3] = 42 42 ...
 # ...
 def do_analysis(input_file):
 
@@ -20,20 +20,23 @@ def do_analysis(input_file):
         lines = file.readlines()
 
     # Initialize lists to store left and right channel values
-    left_channel = []
-    right_channel = []
+    samples = {}
 
     # Extract values for each tuple
     for line in lines:
         parts = line.split('=')
         if len(parts) == 2:
-            # Split the tuple into left and right channel values
-            left, right = parts[1].strip().split()
-            left_channel.append(int(left))
-            right_channel.append(int(right))
+            # Split the tuple into values
+            values = parts[1].strip().split()
+            for i in range( len(values)):
+                key = f'Sample {i}'
+                if not key in samples:
+                    samples[key] = [int(values[i])]
+                else:
+                    samples[key].append(int(values[i]))
 
     # Create DataFrame
-    df = pd.DataFrame({'Left Channel': left_channel, 'Right Channel': right_channel})
+    df = pd.DataFrame(samples)
 
     # Print the DataFrame
     print(df)
