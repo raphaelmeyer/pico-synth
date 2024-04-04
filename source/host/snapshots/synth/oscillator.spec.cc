@@ -80,4 +80,58 @@ TEST_CASE("noise") {
   ApprovalTests::Approvals::verifyAll(values);
 }
 
+TEST_CASE("change frequency") {
+  FakeRandom random{};
+  Oscillator oscillator{48'000, random};
+
+  oscillator.set_type(WaveForm::Triangle);
+  std::vector<uint16_t> values{};
+  values.resize(4000);
+
+  oscillator.set_frequency(5000);
+  std::ranges::generate_n(values.begin(), 1000,
+                          [&oscillator] { return oscillator.next_value(); });
+
+  oscillator.set_frequency(2000);
+  std::ranges::generate_n(values.begin() + 1000, 1000,
+                          [&oscillator] { return oscillator.next_value(); });
+
+  oscillator.set_frequency(12345);
+  std::ranges::generate_n(values.begin() + 2000, 1000,
+                          [&oscillator] { return oscillator.next_value(); });
+
+  oscillator.set_frequency(8800);
+  std::ranges::generate(values.begin() + 3000, values.end(),
+                        [&oscillator] { return oscillator.next_value(); });
+
+  ApprovalTests::Approvals::verifyAll(values);
+}
+
+TEST_CASE("change wave form") {
+  FakeRandom random{};
+  Oscillator oscillator{48'000, random};
+
+  oscillator.set_frequency(8800);
+  std::vector<uint16_t> values{};
+  values.resize(4000);
+
+  oscillator.set_type(WaveForm::Square);
+  std::ranges::generate_n(values.begin(), 1000,
+                          [&oscillator] { return oscillator.next_value(); });
+
+  oscillator.set_type(WaveForm::Triangle);
+  std::ranges::generate_n(values.begin() + 1000, 1000,
+                          [&oscillator] { return oscillator.next_value(); });
+
+  oscillator.set_type(WaveForm::Noise);
+  std::ranges::generate_n(values.begin() + 2000, 1000,
+                          [&oscillator] { return oscillator.next_value(); });
+
+  oscillator.set_type(WaveForm::Sawtooth);
+  std::ranges::generate(values.begin() + 3000, values.end(),
+                        [&oscillator] { return oscillator.next_value(); });
+
+  ApprovalTests::Approvals::verifyAll(values);
+}
+
 } // namespace
