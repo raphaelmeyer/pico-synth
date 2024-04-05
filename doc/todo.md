@@ -12,7 +12,11 @@
 
   - Migrate and clean up implementation
   - Delete old implementation
-  - Clean up (or remove) taskfile
+  - Reduce libraries ?
+    - In the shared folder, e.g. have a `synth`, `adapter` and `common` library only with subfolders
+  - Clean up cmake files
+    - link libraries (public vs private)
+    - link libraries order
   - Move content from README to doc, except for short hint how to get started
 
 - midi: `powf` -> `<cmath>` vs `<pico/float.h>`
