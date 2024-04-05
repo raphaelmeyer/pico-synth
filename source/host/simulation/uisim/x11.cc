@@ -8,6 +8,7 @@
  *********************/
 #include "x11.h"
 #if USE_X11
+#include <X11/Xatom.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <stdbool.h>
@@ -224,6 +225,11 @@ void lv_x11_init(char const *title, lv_coord_t width, lv_coord_t height) {
   /* create window */
   window = XCreateSimpleWindow(display, DefaultRootWindow(display), 0, 0, width,
                                height, 0, myforeground, mybackground);
+
+  Atom atom = XInternAtom(display, "_NET_WM_WINDOW_TYPE_DIALOG", False);
+  Atom wm_type = XInternAtom(display, "_NET_WM_WINDOW_TYPE", False);
+  XChangeProperty(display, window, wm_type, XA_ATOM, 32, PropModeReplace,
+                  (unsigned char *)&atom, 1);
 
   /* window manager properties (yes, use of StdProp is obsolete) */
   XSetStandardProperties(display, window, title, NULL, None, NULL, 0, NULL);
