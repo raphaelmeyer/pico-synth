@@ -1,5 +1,6 @@
 #include "x11.h"
 
+#include <synth/control/focus.h>
 #include <synth/control/model.h>
 #include <synth/ui/ui.h>
 
@@ -39,7 +40,8 @@ int main() {
   }};
 
   Model model{};
-  UI ui{model};
+  Focus focus{};
+  UI ui{model, focus};
 
   ui.show();
 

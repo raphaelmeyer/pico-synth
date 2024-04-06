@@ -1,6 +1,7 @@
 #include "ui.h"
 #include "theme.h"
 
+#include <synth/control/focus.h>
 #include <synth/control/model.h>
 
 #include <string>
@@ -10,14 +11,15 @@ namespace {
 // constexpr const lv_coord_t Left = 0;
 constexpr const lv_coord_t Right = 64;
 
-// constexpr const lv_coord_t Row_0 = 2;
+constexpr const lv_coord_t Row_0 = 2;
 constexpr const lv_coord_t Row_1 = 22;
 // constexpr const lv_coord_t Row_2 = 58;
 // constexpr const lv_coord_t Row_3 = 94;
 
 } // namespace
 
-UI::UI(Model const &model) : model_{model} {}
+UI::UI(Model const &model, Focus const &focus)
+    : model_{model}, focus_{focus}, oscillator_(Row_0) {}
 
 void UI::show() {
   lv_style_init(&style_);
@@ -25,6 +27,10 @@ void UI::show() {
   lv_style_set_bg_color(&style_, theme::bg_color);
   lv_style_set_text_color(&style_, theme::text_color);
   lv_obj_add_style(lv_scr_act(), &style_, 0);
+
+  oscillator_.show();
+
+  oscillator_.select(focus_.focused().oscillator);
 
   // volume
   lv_coord_t x_ = Right;
@@ -50,4 +56,7 @@ void UI::show() {
   lv_obj_set_style_text_color(ui_value_, theme::selected_color,
                               LV_STATE_FOCUSED);
   lv_obj_set_style_text_color(ui_value_, theme::edit_color, LV_STATE_EDITED);
+
+  lv_label_set_text_fmt(ui_value_, "%u",
+                        model_.channels.at(focus_.focused().oscillator).volume);
 }

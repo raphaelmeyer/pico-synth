@@ -4,6 +4,7 @@ add_library(synth::ui ALIAS ui)
 target_sources(ui
   PRIVATE
     ui.cc
+    oscillator_selection.cc
 )
 
 target_include_directories(ui
