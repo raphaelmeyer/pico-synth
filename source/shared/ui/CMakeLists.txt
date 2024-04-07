@@ -5,6 +5,7 @@ target_sources(ui
   PRIVATE
     ui.cc
     oscillator_selection.cc
+    range_input.cc
 )
 
 target_include_directories(ui

@@ -43,6 +43,9 @@ int main() {
   Focus focus{};
   UI ui{model, focus};
 
+  model.channels.at(0).volume = 7530;
+  focus.scroll(3);
+
   ui.show();
 
   for (;;) {
