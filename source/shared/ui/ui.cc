@@ -1,4 +1,5 @@
 #include "ui.h"
+
 #include "theme.h"
 
 #include <synth/control/focus.h>
@@ -20,7 +21,7 @@ constexpr const lv_coord_t Row_3 = 94;
 
 UI::UI(Model const &model, Focus const &focus)
     : model_{model}, focus_{focus}, oscillator_{Row_0},
-      volume_{LV_SYMBOL_VOLUME_MAX, Right, Row_1},
+      wave_{"Wave", Left, Row_1}, volume_{LV_SYMBOL_VOLUME_MAX, Right, Row_1},
       attack_{"Attack", Left, Row_2}, decay_{"Decay", Right, Row_2},
       sustain_{"Sustain", Left, Row_3}, release_{"Release", Right, Row_3} {}
 
@@ -30,6 +31,8 @@ void UI::show() {
   lv_style_set_bg_color(&style_, theme::bg_color);
   lv_style_set_text_color(&style_, theme::text_color);
   lv_obj_add_style(lv_scr_act(), &style_, 0);
+
+  wave_.show();
 
   oscillator_.show();
   volume_.show();
@@ -42,6 +45,7 @@ void UI::show() {
 
   auto const channel = model_.channels.at(focus_.focused().oscillator);
 
+  wave_.select(channel.wave);
   volume_.set_value(channel.volume);
   attack_.set_value(channel.attack);
   decay_.set_value(channel.decay);

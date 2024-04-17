@@ -6,6 +6,12 @@ target_sources(ui
     ui.cc
     oscillator_selection.cc
     range_input.cc
+    wave_form_selection.cc
+
+    icons/img_noise_wave.c
+    icons/img_sawtooth_wave.c
+    icons/img_square_wave.c
+    icons/img_triangle_wave.c
 )
 
 target_include_directories(ui
