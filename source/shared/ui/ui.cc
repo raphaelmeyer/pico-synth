@@ -69,6 +69,122 @@ void UI::show() {
     release_.focus();
     break;
   case Property::WaveForm:
+    wave_.focus();
+    break;
+  }
+}
+
+void UI::handle(ControlEvent event) {
+  auto const property = focus_.focused().property;
+
+  switch (event) {
+  case ControlEvent::Focus:
+    oscillator_.select(focus_.focused().oscillator);
+    if (property == Property::Volume) {
+      volume_.focus();
+    } else {
+      volume_.blur();
+    }
+    if (property == Property::Attack) {
+      attack_.focus();
+    } else {
+      attack_.blur();
+    }
+    if (property == Property::Decay) {
+      decay_.focus();
+    } else {
+      decay_.blur();
+    }
+    if (property == Property::Sustain) {
+      sustain_.focus();
+    } else {
+      sustain_.blur();
+    }
+    if (property == Property::Release) {
+      release_.focus();
+    } else {
+      release_.blur();
+    }
+    if (property == Property::WaveForm) {
+      wave_.focus();
+    } else {
+      wave_.blur();
+    }
+    break;
+
+  case ControlEvent::Edit:
+    switch (property) {
+    case Property::Volume:
+      volume_.edit();
+      break;
+    case Property::Attack:
+      attack_.edit();
+      break;
+    case Property::Decay:
+      decay_.edit();
+      break;
+    case Property::Sustain:
+      sustain_.edit();
+      break;
+    case Property::Release:
+      release_.edit();
+      break;
+    case Property::WaveForm:
+      wave_.edit();
+      break;
+    }
+    break;
+
+  case ControlEvent::Confirm:
+    switch (property) {
+    case Property::Volume:
+      volume_.confirm();
+      break;
+    case Property::Attack:
+      attack_.confirm();
+      break;
+    case Property::Decay:
+      decay_.confirm();
+      break;
+    case Property::Sustain:
+      sustain_.confirm();
+      break;
+    case Property::Release:
+      release_.confirm();
+      break;
+    case Property::WaveForm:
+      wave_.confirm();
+      break;
+    }
+    break;
+
+  case ControlEvent::Change:
+    auto const channel = model_.channels.at(focus_.focused().oscillator);
+    switch (property) {
+    case Property::Volume:
+      volume_.set_value(channel.volume);
+      break;
+
+    case Property::Attack:
+      attack_.set_value(channel.attack);
+      break;
+
+    case Property::Decay:
+      decay_.set_value(channel.decay);
+      break;
+
+    case Property::Sustain:
+      sustain_.set_value(channel.sustain);
+      break;
+
+    case Property::Release:
+      release_.set_value(channel.release);
+      break;
+
+    case Property::WaveForm:
+      wave_.select(channel.wave);
+      break;
+    }
     break;
   }
 }

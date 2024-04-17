@@ -10,6 +10,8 @@
 #include <synth/io/push_button.h>
 #include <synth/io/rotary_encoder.h>
 
+#include <synth/ui/ui.h>
+
 #include <bsp/board.h>
 #include <tusb.h>
 
@@ -50,6 +52,8 @@ GpioIrq gpio{};
 Model model{};
 Focus focus{};
 Control control{model, focus};
+
+UI ui{model, focus};
 
 RotaryEncoder select{config.select,
                      [](int steps) { control.handle(Rotate{steps}); }};
@@ -92,6 +96,7 @@ void task() {
   synth_spi.init();
 
   control.onEvent([](ControlEvent event) { synth.handle(event); });
+  control.onEvent([](ControlEvent event) { ui.handle(event); });
 
   for (;;) {
     UsbMidiPacket packet{};

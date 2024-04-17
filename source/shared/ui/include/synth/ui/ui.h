@@ -4,6 +4,8 @@
 #include "range_input.h"
 #include "wave_form_selection.h"
 
+#include <synth/control/control_event.h>
+
 #include <lvgl.h>
 
 class Focus;
@@ -15,6 +17,8 @@ public:
   UI(Model const &model, Focus const &focus);
 
   void show();
+
+  void handle(ControlEvent event);
 
 private:
   Model const &model_;
