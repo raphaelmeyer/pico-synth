@@ -2,9 +2,9 @@
 
 ## Migration
 
-- input device(s)
-- add (and wire) control in midi adapter
-- UI
+- Fix segv on uisim shutdown
+- Compare uisim and midi-adapter main and try to move common ui setup code to shared code
+- Improve ui event handling to reduce repeated switch cases
 
 ## Overview
 
