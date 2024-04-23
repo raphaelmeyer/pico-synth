@@ -5,6 +5,7 @@
 - Fix segv on uisim shutdown
 - Compare uisim and midi-adapter main and try to move common ui setup code to shared code
 - Improve ui event handling to reduce repeated switch cases
+- Clean up include folders, e.g. <synth/io> vs <synth/device>
 
 ## Overview
 

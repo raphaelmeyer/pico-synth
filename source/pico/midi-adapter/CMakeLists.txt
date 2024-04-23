@@ -12,6 +12,7 @@ target_link_libraries(midi-adapter PRIVATE
   tinyusb_device
   tinyusb_board
   lvgl::lvgl
+  device::display
   device::io
   synth::control
   synth::message

@@ -10,6 +10,9 @@
 #include <synth/io/push_button.h>
 #include <synth/io/rotary_encoder.h>
 
+#include <synth/device/display.h>
+#include <synth/device/st7735.h>
+
 #include <synth/ui/ui.h>
 
 #include <bsp/board.h>
@@ -32,6 +35,8 @@ struct Config {
   RotaryEncoderConfig select;
   PushButtonConfig confirm;
 
+  St7735Config lcd;
+
   uint power_led;
 };
 
@@ -42,6 +47,13 @@ Config const config{
 
     .select = {.gpio_a = 0, .gpio_b = 1},
     .confirm = {.gpio = 2},
+
+    .lcd = {.clock = 18,
+            .mosi = 19,
+            .chip_select = 17,
+            .data_command = 20,
+            .reset = 21,
+            .spi = spi0},
 
     .power_led = 22
 
@@ -63,6 +75,9 @@ PushButton confirm{config.confirm, [] { control.handle(Click{}); }};
 SynthSpi synth_spi{config.synth_spi};
 MidiControl midi{synth_spi};
 SynthControl synth{model, focus, synth_spi};
+
+St7735 lcd{config.lcd};
+Display display{lcd};
 
 queue_t midi_messages{};
 
@@ -121,12 +136,20 @@ int main() {
   bi_decl(bi_3pins_with_names(config.select.gpio_a, "A", config.select.gpio_b,
                               "B", config.confirm.gpio, "S"));
   bi_decl(bi_1pin_with_name(config.power_led, "LED"));
+  bi_decl(bi_3pins_with_func(config.lcd.chip_select, config.lcd.clock,
+                             config.lcd.mosi, GPIO_FUNC_SPI));
+  bi_decl(bi_2pins_with_names(config.lcd.data_command, "D/C", config.lcd.reset,
+                              "RST"));
 
   gpio_init(config.power_led);
   gpio_set_dir(config.power_led, GPIO_OUT);
   gpio_put(config.power_led, true);
 
   board_init();
+
+  lcd.init();
+  lv_init();
+  display.init();
 
   tud_init(BOARD_TUD_RHPORT);
 
