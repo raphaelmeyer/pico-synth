@@ -1,12 +1,14 @@
 #pragma once
 
+#include "selectable.h"
+
 #include <synth/wave-form.h>
 
 #include <lvgl.h>
 
 #include <string>
 
-class WaveFormSelection {
+class WaveFormSelection : public Selectable {
 public:
   WaveFormSelection(std::string label, lv_coord_t x, lv_coord_t y);
 
@@ -14,11 +16,11 @@ public:
 
   void select(WaveForm wave);
 
-  void focus();
-  void blur();
+  void focus() override;
+  void blur() override;
 
-  void edit();
-  void confirm();
+  void edit() override;
+  void confirm() override;
 
 private:
   std::string const label_;

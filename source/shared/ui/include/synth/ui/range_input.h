@@ -1,10 +1,12 @@
 #pragma once
 
+#include "selectable.h"
+
 #include <lvgl.h>
 
 #include <string>
 
-class RangeInput {
+class RangeInput : public Selectable {
 public:
   RangeInput(std::string label, lv_coord_t x, lv_coord_t y);
 
@@ -12,11 +14,11 @@ public:
 
   void set_value(uint16_t value);
 
-  void focus();
-  void blur();
+  void focus() override;
+  void blur() override;
 
-  void edit();
-  void confirm();
+  void edit() override;
+  void confirm() override;
 
 private:
   std::string const label_;

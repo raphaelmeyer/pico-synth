@@ -96,8 +96,21 @@ private:
         break;
 
       case 27:
-      case 113:
+      case 'q':
         display_.stop();
+        break;
+
+      case '<':
+        control_.handle(Rotate{-1});
+        break;
+
+      case '>':
+        control_.handle(Rotate{1});
+        break;
+
+      case 13:
+      case ' ':
+        control_.handle(Click{});
         break;
       }
 

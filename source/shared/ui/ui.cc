@@ -52,26 +52,7 @@ void UI::show() {
   sustain_.set_value(channel.sustain);
   release_.set_value(channel.release);
 
-  switch (focus_.focused().property) {
-  case Property::Volume:
-    volume_.focus();
-    break;
-  case Property::Attack:
-    attack_.focus();
-    break;
-  case Property::Decay:
-    decay_.focus();
-    break;
-  case Property::Sustain:
-    sustain_.focus();
-    break;
-  case Property::Release:
-    release_.focus();
-    break;
-  case Property::WaveForm:
-    wave_.focus();
-    break;
-  }
+  update(focus_.focused().property, [](Selectable &item) { item.focus(); });
 }
 
 void UI::handle(ControlEvent event) {
@@ -80,82 +61,21 @@ void UI::handle(ControlEvent event) {
   switch (event) {
   case ControlEvent::Focus:
     oscillator_.select(focus_.focused().oscillator);
-    if (property == Property::Volume) {
-      volume_.focus();
-    } else {
-      volume_.blur();
-    }
-    if (property == Property::Attack) {
-      attack_.focus();
-    } else {
-      attack_.blur();
-    }
-    if (property == Property::Decay) {
-      decay_.focus();
-    } else {
-      decay_.blur();
-    }
-    if (property == Property::Sustain) {
-      sustain_.focus();
-    } else {
-      sustain_.blur();
-    }
-    if (property == Property::Release) {
-      release_.focus();
-    } else {
-      release_.blur();
-    }
-    if (property == Property::WaveForm) {
-      wave_.focus();
-    } else {
-      wave_.blur();
-    }
+    update_all([focused = property](Selectable &item, Property current) {
+      if (focused == current) {
+        item.focus();
+      } else {
+        item.blur();
+      }
+    });
     break;
 
   case ControlEvent::Edit:
-    switch (property) {
-    case Property::Volume:
-      volume_.edit();
-      break;
-    case Property::Attack:
-      attack_.edit();
-      break;
-    case Property::Decay:
-      decay_.edit();
-      break;
-    case Property::Sustain:
-      sustain_.edit();
-      break;
-    case Property::Release:
-      release_.edit();
-      break;
-    case Property::WaveForm:
-      wave_.edit();
-      break;
-    }
+    update(property, [](Selectable &item) { item.edit(); });
     break;
 
   case ControlEvent::Confirm:
-    switch (property) {
-    case Property::Volume:
-      volume_.confirm();
-      break;
-    case Property::Attack:
-      attack_.confirm();
-      break;
-    case Property::Decay:
-      decay_.confirm();
-      break;
-    case Property::Sustain:
-      sustain_.confirm();
-      break;
-    case Property::Release:
-      release_.confirm();
-      break;
-    case Property::WaveForm:
-      wave_.confirm();
-      break;
-    }
+    update(property, [](Selectable &item) { item.confirm(); });
     break;
 
   case ControlEvent::Change:
