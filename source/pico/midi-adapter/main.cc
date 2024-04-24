@@ -59,28 +59,32 @@ Config const config{
 
 };
 
-GpioIrq gpio{};
+queue_t midi_messages{};
+queue_t control_events{};
 
 Model model{};
 Focus focus{};
-Control control{model, focus};
 
 UI ui{model, focus};
+
+SynthSpi synth_spi{config.synth_spi};
+MidiControl midi{synth_spi};
+SynthControl synth{model, focus, synth_spi};
+
+Control control{model, focus, [](ControlEvent event) {
+                  synth.handle(event);
+                  queue_add_blocking(&control_events, &event);
+                }};
+
+GpioIrq gpio{};
 
 RotaryEncoder select{config.select,
                      [](int steps) { control.handle(Rotate{steps}); }};
 
 PushButton confirm{config.confirm, [] { control.handle(Click{}); }};
 
-SynthSpi synth_spi{config.synth_spi};
-MidiControl midi{synth_spi};
-SynthControl synth{model, focus, synth_spi};
-
 St7735 lcd{config.lcd};
 Display display{lcd};
-
-queue_t midi_messages{};
-queue_t control_events{};
 
 using UsbMidiPacket = std::array<uint8_t, 4>;
 
@@ -115,10 +119,6 @@ void task() {
   select.init(gpio);
   confirm.init(gpio);
   synth_spi.init();
-
-  control.onEvent([](ControlEvent event) { synth.handle(event); });
-  control.onEvent(
-      [](ControlEvent event) { queue_add_blocking(&control_events, &event); });
 
   for (;;) {
     UsbMidiPacket packet{};

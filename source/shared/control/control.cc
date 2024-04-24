@@ -41,7 +41,9 @@ template <class... Ts> struct overloaded : Ts... {
 };
 template <class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
 
-Control::Control(Model &model, Focus &focus) : model_{model}, focus_{focus} {}
+Control::Control(Model &model, Focus &focus,
+                 std::function<void(ControlEvent)> on_event)
+    : model_{model}, focus_{focus}, on_event_{on_event} {}
 
 void Control::handle(InputEvent event) {
   std::visit(overloaded{
@@ -49,37 +51,25 @@ void Control::handle(InputEvent event) {
                  [this](Click) {
                    if (focus_.edited()) {
                      focus_.confirm();
-                     for (auto notify : listeners_) {
-                       notify(ControlEvent::Confirm);
-                     }
+                     on_event_(ControlEvent::Confirm);
                    } else {
                      focus_.edit();
-                     for (auto notify : listeners_) {
-                       notify(ControlEvent::Edit);
-                     }
+                     on_event_(ControlEvent::Edit);
                    }
                  },
 
                  [this](Rotate rotate) {
                    if (focus_.edited()) {
                      change_value(rotate.diff);
-                     for (auto notify : listeners_) {
-                       notify(ControlEvent::Change);
-                     }
+                     on_event_(ControlEvent::Change);
                    } else {
                      change_selection(rotate.diff);
-                     for (auto notify : listeners_) {
-                       notify(ControlEvent::Focus);
-                     }
+                     on_event_(ControlEvent::Focus);
                    }
                  }
 
              },
              event);
-}
-
-void Control::onEvent(std::function<void(ControlEvent)> listener) {
-  listeners_.push_back(listener);
 }
 
 void Control::change_value(int diff) {

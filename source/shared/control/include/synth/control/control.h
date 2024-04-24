@@ -11,10 +11,10 @@ struct Model;
 
 class Control {
 public:
-  Control(Model &model, Focus &focus);
+  Control(Model &model, Focus &focus,
+          std::function<void(ControlEvent)> on_event);
 
   void handle(InputEvent event);
-  void onEvent(std::function<void(ControlEvent)> listener);
 
 private:
   void change_value(int diff);
@@ -23,5 +23,5 @@ private:
   Model &model_;
   Focus &focus_;
 
-  std::vector<std::function<void(ControlEvent)>> listeners_{};
+  std::function<void(ControlEvent)> on_event_{};
 };

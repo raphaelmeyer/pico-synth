@@ -14,7 +14,7 @@ TEST_CASE("focus") {
   Focus focus{};
 
   SUBCASE("should focus parameter on rotate event") {
-    Control control{model, focus};
+    Control control{model, focus, [](ControlEvent) {}};
 
     control.handle(Rotate{13});
     REQUIRE(focus.focused().oscillator == 2);
@@ -26,7 +26,7 @@ TEST_CASE("focus") {
   }
 
   SUBCASE("should edit focused parameter on click event") {
-    Control control{model, focus};
+    Control control{model, focus, [](ControlEvent) {}};
     control.handle(Rotate{2});
     REQUIRE(focus.focused().oscillator == 0);
     REQUIRE(focus.focused().property == Property::Attack);
@@ -37,7 +37,7 @@ TEST_CASE("focus") {
   }
 
   SUBCASE("should change edited parameter on rotate event") {
-    Control control{model, focus};
+    Control control{model, focus, [](ControlEvent) {}};
     control.handle(Rotate{7});
     REQUIRE(focus.focused().oscillator == 1);
     REQUIRE(focus.focused().property == Property::Volume);
@@ -51,7 +51,7 @@ TEST_CASE("focus") {
   }
 
   SUBCASE("should confirm edited parameter on click event") {
-    Control control{model, focus};
+    Control control{model, focus, [](ControlEvent) {}};
 
     control.handle(Rotate{10});
     REQUIRE(focus.focused().oscillator == 1);
@@ -70,7 +70,7 @@ TEST_CASE("control") {
   Focus focus{};
 
   SUBCASE("should change volume on rotate event") {
-    Control control{model, focus};
+    Control control{model, focus, [](ControlEvent) {}};
     model.channels.at(1).volume = 1000;
 
     control.handle(Rotate{7});
@@ -85,7 +85,7 @@ TEST_CASE("control") {
   }
 
   SUBCASE("should not change other parameters") {
-    Control control{model, focus};
+    Control control{model, focus, [](ControlEvent) {}};
     model.channels.at(0).volume = 1000;
     model.channels.at(1).volume = 1111;
     model.channels.at(2).volume = 2000;
@@ -114,7 +114,7 @@ TEST_CASE("control") {
   }
 
   SUBCASE("should change volume on rotate event") {
-    Control control{model, focus};
+    Control control{model, focus, [](ControlEvent) {}};
 
     control.handle(Rotate{9});
     REQUIRE(focus.focused().oscillator == 1);
@@ -132,7 +132,7 @@ TEST_CASE("control") {
   }
 
   SUBCASE("shold change parameter value exponentially on fast rotation") {
-    Control control{model, focus};
+    Control control{model, focus, [](ControlEvent) {}};
 
     control.handle(Rotate{9});
     REQUIRE(focus.focused().oscillator == 1);
@@ -159,7 +159,7 @@ TEST_CASE("control") {
   }
 
   SUBCASE("should not overflow parameter value") {
-    Control control{model, focus};
+    Control control{model, focus, [](ControlEvent) {}};
 
     control.handle(Rotate{9});
     REQUIRE(focus.focused().oscillator == 1);
@@ -177,7 +177,7 @@ TEST_CASE("control") {
   }
 
   SUBCASE("should not underflow parameter value") {
-    Control control{model, focus};
+    Control control{model, focus, [](ControlEvent) {}};
 
     control.handle(Rotate{9});
     REQUIRE(focus.focused().oscillator == 1);
@@ -195,7 +195,7 @@ TEST_CASE("control") {
   }
 
   SUBCASE("should change wave on rotate event") {
-    Control control{model, focus};
+    Control control{model, focus, [](ControlEvent) {}};
 
     control.handle(Rotate{18});
     REQUIRE(focus.focused().oscillator == 3);
@@ -229,8 +229,8 @@ TEST_CASE("notification") {
   SUBCASE("should notify when parameter is focused") {
     std::vector<ControlEvent> spy;
 
-    Control control{model, focus};
-    control.onEvent([&spy](ControlEvent event) { spy.push_back(event); });
+    Control control{model, focus,
+                    [&spy](ControlEvent event) { spy.push_back(event); }};
 
     control.handle(Rotate{-3});
 
@@ -241,8 +241,8 @@ TEST_CASE("notification") {
   SUBCASE("should notify when parameter is edited") {
     std::vector<ControlEvent> spy;
 
-    Control control{model, focus};
-    control.onEvent([&spy](ControlEvent event) { spy.push_back(event); });
+    Control control{model, focus,
+                    [&spy](ControlEvent event) { spy.push_back(event); }};
 
     control.handle(Rotate{2});
     control.handle(Click{});
@@ -255,8 +255,8 @@ TEST_CASE("notification") {
     std::vector<ControlEvent> spy;
     model.channels.at(1).volume = 123;
 
-    Control control{model, focus};
-    control.onEvent([&spy](ControlEvent event) { spy.push_back(event); });
+    Control control{model, focus,
+                    [&spy](ControlEvent event) { spy.push_back(event); }};
 
     control.handle(Rotate{7});
     control.handle(Click{});
@@ -270,8 +270,8 @@ TEST_CASE("notification") {
     std::vector<ControlEvent> spy;
     model.channels.at(1).sustain = 1000;
 
-    Control control{model, focus};
-    control.onEvent([&spy](ControlEvent event) { spy.push_back(event); });
+    Control control{model, focus,
+                    [&spy](ControlEvent event) { spy.push_back(event); }};
 
     control.handle(Rotate{10});
     control.handle(Click{});

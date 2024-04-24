@@ -147,10 +147,11 @@ int main() {
   Focus focus{};
   UI ui{model, focus};
 
-  Control control{model, focus};
+  Control control{model, focus,
+                  [&ui](ControlEvent event) { ui.handle(event); }};
+
   InputHandler input_handler{control, display};
 
-  control.onEvent([&ui](ControlEvent event) { ui.handle(event); });
   ui.show();
   display.run();
 }
