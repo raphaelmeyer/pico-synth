@@ -80,6 +80,7 @@ St7735 lcd{config.lcd};
 Display display{lcd};
 
 queue_t midi_messages{};
+queue_t control_events{};
 
 using UsbMidiPacket = std::array<uint8_t, 4>;
 
@@ -97,6 +98,11 @@ void task() {
   for (;;) {
     tud_task();
     midi_task();
+
+    ControlEvent event{};
+    while (queue_try_remove(&control_events, &event)) {
+      ui.handle(event);
+    }
   }
 }
 
@@ -111,7 +117,8 @@ void task() {
   synth_spi.init();
 
   control.onEvent([](ControlEvent event) { synth.handle(event); });
-  control.onEvent([](ControlEvent event) { ui.handle(event); });
+  control.onEvent(
+      [](ControlEvent event) { queue_add_blocking(&control_events, &event); });
 
   for (;;) {
     UsbMidiPacket packet{};
@@ -154,6 +161,7 @@ int main() {
   tud_init(BOARD_TUD_RHPORT);
 
   queue_init(&midi_messages, 4 * sizeof(uint8_t), 16);
+  queue_init(&control_events, sizeof(ControlEvent), 4);
 
   multicore_launch_core1(core_1::task);
 

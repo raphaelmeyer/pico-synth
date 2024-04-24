@@ -2,10 +2,8 @@
 
 ## Migration
 
-- Fix segv on uisim shutdown
 - Compare uisim and midi-adapter main and try to move common ui setup code to shared code
-- Improve ui event handling to reduce repeated switch cases
-- Clean up include folders, e.g. <synth/io> vs <synth/device>
+- Fix segv on uisim shutdown
 
 ## Overview
 
@@ -13,6 +11,7 @@
 
   - Migrate and clean up implementation
   - Delete old implementation
+  - Clean up include folders, e.g. <synth/io> vs <synth/device>
   - Reduce libraries ?
     - In the shared folder, e.g. have a `synth`, `adapter` and `common` library only with subfolders
   - Clean up cmake files
