@@ -152,16 +152,17 @@ int main() {
   gpio_set_dir(config.power_led, GPIO_OUT);
   gpio_put(config.power_led, true);
 
-  board_init();
+  queue_init(&midi_messages, 4 * sizeof(uint8_t), 16);
+  queue_init(&control_events, sizeof(ControlEvent), 4);
 
+  board_init();
   lcd.init();
   lv_init();
-  display.init();
 
   tud_init(BOARD_TUD_RHPORT);
 
-  queue_init(&midi_messages, 4 * sizeof(uint8_t), 16);
-  queue_init(&control_events, sizeof(ControlEvent), 4);
+  display.init();
+  ui.show();
 
   multicore_launch_core1(core_1::task);
 

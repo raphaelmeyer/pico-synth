@@ -2,8 +2,8 @@
 
 ## Migration
 
-- Compare uisim and midi-adapter main and try to move common ui setup code to shared code
 - Fix segv on uisim shutdown
+- UI refresh values on screen change
 
 ## Overview
 

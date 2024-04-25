@@ -87,7 +87,7 @@ int main() {
 
   gpio_init(config.power_led);
   gpio_set_dir(config.power_led, true);
-  gpio_put(config.power_led, false);
+  gpio_put(config.power_led, true);
 
   queue_init(&messages, sizeof(Message), 4);
 
