@@ -54,6 +54,8 @@ private:
     function(wave_, Property::WaveForm);
   }
 
+  void update_values();
+
   Model const &model_;
   Focus const &focus_;
 

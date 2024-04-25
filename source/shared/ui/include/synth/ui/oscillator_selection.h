@@ -6,13 +6,15 @@
 
 #include <array>
 
+enum class SelectedOscillator { Same, Changed };
+
 class OscillatorSelection {
 public:
   OscillatorSelection(lv_coord_t y);
 
   void show();
 
-  void select(OscillatorId id);
+  SelectedOscillator select(OscillatorId id);
 
 private:
   lv_coord_t const y_;

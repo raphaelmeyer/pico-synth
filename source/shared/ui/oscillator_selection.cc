@@ -25,10 +25,18 @@ void OscillatorSelection::show() {
     lv_obj_add_style(item, &style_selected_, LV_STATE_CHECKED);
     ++id;
   }
+
+  lv_obj_add_state(ui_items_[selected_], LV_STATE_CHECKED);
 }
 
-void OscillatorSelection::select(OscillatorId id) {
+SelectedOscillator OscillatorSelection::select(OscillatorId id) {
+  if (id == selected_) {
+    return SelectedOscillator::Same;
+  }
+
   lv_obj_clear_state(ui_items_[selected_], LV_STATE_CHECKED);
   selected_ = id;
   lv_obj_add_state(ui_items_[selected_], LV_STATE_CHECKED);
+
+  return SelectedOscillator::Changed;
 }

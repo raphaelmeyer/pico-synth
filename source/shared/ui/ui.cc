@@ -43,15 +43,7 @@ void UI::show() {
 
   oscillator_.select(focus_.focused().oscillator);
 
-  auto const channel = model_.channels.at(focus_.focused().oscillator);
-
-  wave_.select(channel.wave);
-  volume_.set_value(channel.volume);
-  attack_.set_value(channel.attack);
-  decay_.set_value(channel.decay);
-  sustain_.set_value(channel.sustain);
-  release_.set_value(channel.release);
-
+  update_values();
   update(focus_.focused().property, [](Selectable &item) { item.focus(); });
 }
 
@@ -60,7 +52,11 @@ void UI::handle(ControlEvent event) {
 
   switch (event) {
   case ControlEvent::Focus:
-    oscillator_.select(focus_.focused().oscillator);
+    if (oscillator_.select(focus_.focused().oscillator) ==
+        SelectedOscillator::Changed) {
+      update_values();
+    }
+
     update_all([focused = property](Selectable &item, Property current) {
       if (focused == current) {
         item.focus();
@@ -107,4 +103,14 @@ void UI::handle(ControlEvent event) {
     }
     break;
   }
+}
+
+void UI::update_values() {
+  auto const channel = model_.channels.at(focus_.focused().oscillator);
+  wave_.select(channel.wave);
+  volume_.set_value(channel.volume);
+  attack_.set_value(channel.attack);
+  decay_.set_value(channel.decay);
+  sustain_.set_value(channel.sustain);
+  release_.set_value(channel.release);
 }
