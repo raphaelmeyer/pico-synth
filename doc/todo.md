@@ -1,10 +1,5 @@
 # TODO
 
-## Migration
-
-- Fix segv on uisim shutdown
-- UI refresh values on screen change
-
 ## Overview
 
 - Refactor project setup
@@ -21,6 +16,8 @@
 
 - midi: `powf` -> `<cmath>` vs `<pico/float.h>`
 
+- Tune knob fast rotation (e.g. steps * (one of 1,32,1024))
+
 - Reset function for synth
 
   - Reset on {0xff, 0xff} independent of data or command? That would disable
@@ -28,8 +25,13 @@
   - Define a reset command and just send it twice to handle case of spi out of
     sync?
 
+- Investigate signals
+  - Identify and remove noise and clicks
+
 - Smooth oscillator frequency change (continue with current level)
 - Smooth trigger when not yet released
 - Investigate triangle wave (cap instead of sharp tip)
+
+- Fix segv on uisim shutdown
 
 - Add tests running on target (verify calculations)
