@@ -127,7 +127,8 @@ static void x11_event_handler(lv_timer_t *) {
 }
 
 static void lv_x11_hide_cursor() {
-  XColor black = {.red = 0, .green = 0, .blue = 0};
+  XColor black = {
+      .pixel = 0, .red = 0, .green = 0, .blue = 0, .flags = 0, .pad = 0};
   char empty_data[] = {0};
 
   Pixmap empty_bitmap =
