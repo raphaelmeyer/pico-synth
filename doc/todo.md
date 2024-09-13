@@ -4,8 +4,6 @@
 
 - Refactor project setup
 
-  - Migrate and clean up implementation
-  - Delete old implementation
   - Clean up include folders, e.g. <synth/io> vs <synth/device>
   - Reduce libraries ?
     - In the shared folder, e.g. have a `synth`, `adapter` and `common` library only with subfolders
@@ -16,16 +14,10 @@
 
 - midi: `powf` -> `<cmath>` vs `<pico/float.h>`
 
-- Tune knob fast rotation (e.g. steps * (one of 1,32,1024))
-
-- Reset function for synth
-
-  - Reset on {0xff, 0xff} independent of data or command? That would disable
-    value 0xffff for all register
-  - Define a reset command and just send it twice to handle case of spi out of
-    sync?
+- Knob fast rotation ux
 
 - Investigate signals
+
   - Identify and remove noise and clicks
 
 - Smooth oscillator frequency change (continue with current level)
@@ -35,3 +27,21 @@
 - Fix segv on uisim shutdown
 
 - Add tests running on target (verify calculations)
+
+## Filter
+
+keywords to search for:
+
+- convolution
+- fir, iir
+- ladder
+- state variable filter
+
+### Naive
+
+    uint16_t filtered = (value * a + last_value * (65535 - a)) / 65535;
+    last_value = filtered;
+
+### State variable filter
+
+- https://cytomic.com/technical-papers/
